@@ -1,0 +1,76 @@
+<?php
+
+namespace App\Filament\Resources\Apartments\Tables;
+
+use Filament\Tables\Table;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Support\Icons\Heroicon;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\CheckboxColumn;
+use Filament\Tables\Columns\SpatieTagsColumn;
+use Hugomyb\FilamentMediaAction\Actions\MediaAction;
+use Tapp\FilamentSocialShare\Actions\SocialShareAction;
+
+class ApartmentsTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('name')
+                    ->searchable()
+                    ->label('الاسم'),
+                TextColumn::make('governorate')
+                    ->searchable()
+                    ->label('المحافظة'),
+                TextColumn::make('city')
+                    ->searchable()
+                    ->label('المدينة'),
+                SpatieTagsColumn::make('tags')
+                    ->type('features')
+                    ->limitList(2)
+                    ->label('المميزات'),
+                TextColumn::make('price_per_night')
+                    ->numeric()
+                    ->sortable()
+                    ->suffix('$')
+                    ->label('السعر'),
+
+                IconColumn::make('active')
+                    ->boolean()
+                    ->label('نشط'),
+                CheckboxColumn::make('featured')
+                    ->label('مميز'),
+            ])
+            ->filters([
+                //
+            ])
+            ->recordActions([
+                EditAction::make(),
+                MediaAction::make('video_url')
+                    ->label('الفديو')
+                    ->icon(Heroicon::OutlinedVideoCamera)
+                    ->media(fn($record) => $record->video_url),
+                Action::make('toggleActive')
+                    ->label(fn($record) => $record->active ? 'تعطيل' : 'تفعيل')
+                    ->icon(fn($record) => $record->active ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle')
+                    ->color(fn($record) => $record->active ? 'danger' : 'success')
+                    ->requiresConfirmation()
+                    ->action(function ($record) {
+                        $record->active = !$record->active;
+                        $record->save();
+                    }),
+
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+}

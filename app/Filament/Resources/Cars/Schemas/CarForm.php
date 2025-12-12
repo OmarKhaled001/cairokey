@@ -1,0 +1,137 @@
+<?php
+
+namespace App\Filament\Resources\Cars\Schemas;
+
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Tabs;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Tabs\Tab;
+use Mokhosh\FilamentRating\Components\Rating;
+use Filament\Forms\Components\SpatieTagsInput;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+
+class CarForm
+{
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Tabs::make('Car Details')
+                    ->columnSpanFull()
+                    ->tabs([
+
+                        /* ------------------------------------
+                     * 🟦 TAB 1 — Basic Info
+                     * ------------------------------------ */
+                        Tab::make('Basic Info & Specifications')
+                            ->label('البيانات والمواصفات')
+                            ->icon('heroicon-o-information-circle')
+                            ->schema([
+
+                                /* ------------------ *
+                             * Basic Info
+                             * ------------------ */
+                                Fieldset::make('معلومات أساسية')
+                                    ->schema([
+                                        TextInput::make('name')
+                                            ->required()
+                                            ->columnSpanFull()
+                                            ->label('الاسم'),
+
+                                        Textarea::make('description')
+                                            ->columnSpanFull()
+                                            ->label('الوصف')
+                                            ->rows(5),
+                                        SpatieTagsInput::make('tags')
+                                            ->type('features')
+                                            ->label('المميزات')
+                                            ->columnSpanFull(),
+                                    ]),
+
+                                /* ------------------ *
+                             * Car Specifications
+                             * ------------------ */
+                                Fieldset::make('مواصفات السيارة')
+                                    ->columns(2)
+                                    ->schema([
+                                        TextInput::make('brand')
+                                            ->required()
+                                            ->label('العلامة التجارية'),
+
+                                        TextInput::make('model')
+                                            ->required()
+                                            ->label('الموديل'),
+
+                                        TextInput::make('year')
+                                            ->numeric()
+                                            ->minValue(1900)
+                                            ->maxValue(date('Y') + 1)
+                                            ->label('السنة'),
+                                    ]),
+
+                                /* ------------------ *
+                             * Pricing
+                             * ------------------ */
+                                Fieldset::make('السعر والتقييم والحالة')
+                                    ->columns(2)
+                                    ->schema([
+                                        TextInput::make('price_per_day')
+                                            ->required()
+                                            ->numeric()
+                                            ->suffix('$')
+                                            ->minValue(0)
+                                            ->default(0)
+                                            ->label('السعر لليوم'),
+
+                                        Rating::make('rating')
+                                            ->required()
+                                            ->color('info')
+                                            ->default(5)
+                                            ->label('التقييم'),
+
+                                        Toggle::make('active')
+                                            ->required()
+                                            ->default(true)
+                                            ->label('نشط'),
+
+                                        Toggle::make('featured')
+                                            ->required()
+                                            ->default(false)
+                                            ->label('مميز'),
+                                    ]),
+                            ]),
+
+                        /* ------------------------------------
+                     * 🟩 TAB 2 — Media
+                     * ------------------------------------ */
+                        Tab::make('Media')
+                            ->label('الوسائط (صور)')
+                            ->icon('heroicon-o-photo')
+                            ->schema([
+                                SpatieMediaLibraryFileUpload::make('cover')
+                                    ->collection('cover')
+                                    ->directory('cars/cover')
+                                    ->label('الغلاف')
+                                    ->image()
+                                    ->columnSpanFull()
+                                    ->preserveFilenames(),
+
+                                SpatieMediaLibraryFileUpload::make('images')
+                                    ->collection('images')
+                                    ->directory('cars/images')
+                                    ->label('الصور')
+                                    ->multiple()
+                                    ->image()
+                                    ->columnSpanFull()
+                                    ->preserveFilenames()
+                                    ->panelLayout('grid')
+                                    ->reorderable()
+                                    ->helperText('يمكنك تحميل صور متعددة وإعادة ترتيبها.'),
+                            ]),
+                    ]),
+            ]);
+    }
+}
