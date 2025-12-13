@@ -8,6 +8,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Tabs\Tab;
 use Mokhosh\FilamentRating\Components\Rating;
@@ -104,16 +105,17 @@ class ApartmentForm
                             ->label('الوسائط (صور وفيديوهات)')
                             ->icon('heroicon-o-photo')
                             ->schema([
-                                SpatieMediaLibraryFileUpload::make('cover')
-                                    ->collection('cover')
-                                    ->directory('apartments/cover')
+                                FileUpload::make('cover')
+                                    ->disk('public')
+                                    ->visibility('public')
+                                    ->directory('apartments/covers')
                                     ->label('الغلاف')
                                     ->image()
-                                    ->columnSpanFull()
-                                    ->preserveFilenames(),
+                                    ->columnSpanFull(),
 
-                                SpatieMediaLibraryFileUpload::make('images')
-                                    ->collection('images')
+                                FileUpload::make('images')
+                                    ->disk('public')
+                                    ->visibility('public')
                                     ->directory('apartments/images')
                                     ->label('الصور')
                                     ->multiple()

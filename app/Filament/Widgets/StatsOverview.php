@@ -32,10 +32,7 @@ class StatsOverview extends StatsOverviewWidget
         $activeServices = Service::where('active', true)->count();
 
         return [
-            Stat::make('إجمالي إيرادات الحجوزات', number_format($totalBookingsRevenue) . ' $')
-                ->description('إجمالي الإيرادات من الحجوزات المكتملة')
-                ->descriptionIcon('heroicon-o-currency-dollar')
-                ->color(Color::Green),
+
 
             Stat::make('فنادق نشطة', $activeHotels)
                 ->description('الفنادق المتاحة حاليًا للحجز')
@@ -57,10 +54,7 @@ class StatsOverview extends StatsOverviewWidget
                 ->descriptionIcon('heroicon-o-wrench-screwdriver')
                 ->color(Color::Teal),
 
-            Stat::make('إجمالي الحجوزات', Booking::count())
-                ->description('إجمالي الحجوزات في النظام')
-                ->descriptionIcon('heroicon-o-calendar')
-                ->color(Color::Yellow),
+
 
             Stat::make('عروض نشطة', $activeOffers)
                 ->description('العروض الترويجية المفعلة')

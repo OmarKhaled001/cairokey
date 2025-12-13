@@ -6,16 +6,17 @@ use App\Models\Car;
 use App\Models\Hotel;
 use App\Models\Service;
 use App\Models\Apartment;
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Select;
-use Filament\Schemas\Schema;
 
 class OfferForm
 {
@@ -142,13 +143,13 @@ class OfferForm
                 ])
                 ->columnSpanFull(),
 
-            SpatieMediaLibraryFileUpload::make('cover')
-                ->collection('cover')
-                ->directory('offers/cover')
+            FileUpload::make('cover')
+                ->disk('public')
+                ->visibility('public')
+                ->directory('offers/covers')
                 ->label('الغلاف')
                 ->image()
-                ->columnSpanFull()
-                ->preserveFilenames(),
+                ->columnSpanFull(),
         ]);
     }
 

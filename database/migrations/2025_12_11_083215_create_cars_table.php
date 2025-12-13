@@ -20,10 +20,10 @@ return new class extends Migration
             $table->string('brand');
             $table->integer('year')->nullable();
 
-            $table->decimal('price_per_day', 10, 2);
+            $table->string('cover')->nullable();
+            $table->json('images')->nullable();
 
-            $table->string('transmission')->nullable();
-            $table->string('fuel_type')->nullable();
+            $table->decimal('price_per_day', 10, 2);
 
             $table->tinyInteger('rating')->default(0);
             $table->boolean('active')->default(true);

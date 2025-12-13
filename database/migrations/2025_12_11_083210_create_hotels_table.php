@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('hotels', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('slug')->nullable()->unique();
             $table->string('location');
             $table->decimal('price_per_night', 10, 2);
+
+            $table->string('cover')->nullable();
+            $table->json('images')->nullable();
 
             $table->string('governorate')->nullable();
             $table->string('city')->nullable();

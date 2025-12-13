@@ -53,22 +53,14 @@ class HotelSeeder extends Seeder
         ];
 
         foreach ($hotels as $data) {
+            $tags = $data['tags'] ?? [];
+            unset($data['tags']);
 
-            Hotel::create([
-                'name'            => $data['name'],
-                'slug'            => Str::slug($data['name']),
-                'description'     => $data['description'],
-                'governorate'     => $data['governorate'],
-                'city'            => $data['city'],
-                'address'         => $data['address'],
-                'location'        => $data['location'],
-                'price_per_night' => $data['price_per_night'],
-                'rating'          => $data['rating'],
-                'active'          => $data['active'],
-                'featured'        => $data['featured'],
-                'created_at'      => now(),
-                'updated_at'      => now(),
-            ]);
+            $hotel = Hotel::create($data);
+
+            if ($tags) {
+                $hotel->syncTags($tags);
+            }
         }
     }
 }

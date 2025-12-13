@@ -24,8 +24,6 @@ class CarSeeder extends Seeder
                 'model' => 'كامري',
                 'year' => 2024,
                 'price_per_day' => 250.00,
-                'transmission' => 'Automatic',
-                'fuel_type' => 'بنزين',
                 'rating' => 4,
                 'active' => true,
                 'featured' => false,
@@ -45,8 +43,6 @@ class CarSeeder extends Seeder
                 'model' => 'S-Class',
                 'year' => 2023,
                 'price_per_day' => 800.00,
-                'transmission' => 'Automatic',
-                'fuel_type' => 'بنزين',
                 'rating' => 5,
                 'active' => true,
                 'featured' => true,
@@ -66,8 +62,6 @@ class CarSeeder extends Seeder
                 'model' => 'إلنترا',
                 'year' => 2022,
                 'price_per_day' => 180.00,
-                'transmission' => 'Automatic',
-                'fuel_type' => 'بنزين',
                 'rating' => 3,
                 'active' => true,
                 'featured' => false,
@@ -87,8 +81,6 @@ class CarSeeder extends Seeder
                 'model' => 'X5',
                 'year' => 2023,
                 'price_per_day' => 650.00,
-                'transmission' => 'Automatic',
-                'fuel_type' => 'بنزين',
                 'rating' => 5,
                 'active' => true,
                 'featured' => true,
@@ -108,8 +100,6 @@ class CarSeeder extends Seeder
                 'model' => 'سيفيك',
                 'year' => 2021,
                 'price_per_day' => 200.00,
-                'transmission' => 'Manual',
-                'fuel_type' => 'بنزين',
                 'rating' => 4,
                 'active' => true,
                 'featured' => false,
@@ -123,23 +113,15 @@ class CarSeeder extends Seeder
             ],
         ];
 
-        foreach ($cars as $carData) {
+        foreach ($cars as $data) {
+            $tags = $data['tags'] ?? [];
+            unset($data['tags']);
 
-            $car = Car::create([
-                'name' => $carData['name'],
-                'description' => $carData['description'],
-                'brand' => $carData['brand'],
-                'model' => $carData['model'],
-                'year' => $carData['year'],
-                'price_per_day' => $carData['price_per_day'],
-                'transmission' => $carData['transmission'],
-                'fuel_type' => $carData['fuel_type'],
-                'rating' => $carData['rating'],
-                'active' => $carData['active'],
-                'featured' => $carData['featured'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            $car = Car::create($data);
+
+            if ($tags) {
+                $car->syncTags($tags);
+            }
         }
     }
 }

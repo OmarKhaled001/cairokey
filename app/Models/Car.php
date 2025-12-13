@@ -27,6 +27,8 @@ class Car extends Model implements HasMedia
         'rating',
         'active',
         'featured',
+        'cover',
+        'images',
     ];
 
     protected $casts = [
@@ -35,6 +37,7 @@ class Car extends Model implements HasMedia
         'price_per_day' => 'decimal:2',
         'rating' => 'integer',
         'year' => 'integer',
+        'images' => 'json',
     ];
 
     public function getSlugOptions(): SlugOptions

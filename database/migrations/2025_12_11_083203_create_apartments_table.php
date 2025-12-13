@@ -26,6 +26,8 @@ return new class extends Migration
             $table->decimal('price_per_night', 10, 2);
 
             $table->text('video_url')->nullable();
+            $table->string('cover')->nullable();
+            $table->json('images')->nullable();
 
             $table->tinyInteger('rating')->default(0);
             $table->boolean('active')->default(true);

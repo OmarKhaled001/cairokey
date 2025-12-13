@@ -24,8 +24,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@cairokey.com',
             'password' => Hash::make('admin@cairokey.com'),
         ]);
-        $this->call(ApartmentSeeder::class);
-        $this->call(CarSeeder::class);
-        $this->call(HotelSeeder::class);
+        $this->call([
+            ApartmentSeeder::class,
+            CarSeeder::class,
+            HotelSeeder::class,
+            ServiceSeeder::class,
+            OfferSeeder::class,
+        ]);
     }
 }

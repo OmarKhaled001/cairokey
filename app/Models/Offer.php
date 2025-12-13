@@ -26,6 +26,7 @@ class Offer extends Model implements HasMedia
         'end_date',
         'active',
         'featured',
+        'cover',
     ];
 
     protected $casts = [

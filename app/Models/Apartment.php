@@ -24,6 +24,8 @@ class Apartment extends Model implements HasMedia
         'location',
         'rooms',
         'video_url',
+        'cover',
+        'images',
         'price_per_night',
         'rating',
         'active',
@@ -36,6 +38,7 @@ class Apartment extends Model implements HasMedia
         'price_per_night' => 'decimal:2',
         'rating' => 'integer',
         'rooms' => 'integer',
+        'images' => 'array',
     ];
 
     public function getSlugOptions(): SlugOptions

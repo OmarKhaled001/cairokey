@@ -27,7 +27,7 @@
         <div
             style="background: var(--bg-light); padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--card-shadow);">
             <form class="d-flex gap-4" style="flex-wrap: wrap;">
-                <input type="text" name="location" id="search-location" placeholder="المدينة / المنطقة"
+                <input type="text" name="search" id="search" placeholder="ابحث عن شقة أو سيارة أو فندق او ..."
                     style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
 
                 <button type="submit" class="btn btn-primary">بحث</button>
@@ -112,6 +112,98 @@
             </div>
         </div>
     </section>
+
+    {{-- Featured Items --}}
+
+    <section class="section-padding" style="background: var(--bg-secondary)">
+        <div class="container">
+            <div class="section-title d-flex justify-between align-center">
+                <h2>العناصر المميزة</h2>
+                <a href="#" class="btn btn-primary">عرض المزيد</a>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4">
+                @foreach ($featuredItems as $item)
+                    <div class="card" style="background: white; border-radius: 12px; box-shadow: var(--card-shadow);">
+                        <div class="card-image"
+                            style="
+        background-image: url('{{ $item->cover ? asset('storage/' . $item->cover) : 'https://placehold.co/600x400?text=Image' }}');
+     ">
+
+                            @if ($item->featured)
+                                <span class="badge-featured">مميز</span>
+                            @endif
+                        </div>
+
+
+                        <div class=" card-body text-center p-3">
+                            <h3>{{ $item->name ?? $item->title }}</h3>
+
+
+                            <a href="#" class="btn btn-primary mt-2">عرض التفاصيل</a>
+                        </div>
+
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- Offers --}}
+    <section class="section-padding" style="background: var(--bg-light)">
+        <div class="container">
+            <div class="section-title d-flex justify-between align-center">
+                <h2>🔥 العروض الحالية</h2>
+                <a href="{{ url('/offers') }}" class="btn btn-primary">عرض جميع العروض</a>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4">
+                @foreach ($offers as $offer)
+                    <div class="card"
+                        style="background:white;border-radius:12px;box-shadow:var(--card-shadow);overflow:hidden;">
+
+                        {{-- Image --}}
+                        <div class="card-image"
+                            style="background-image:url('{{ $offer->cover ? asset('storage/' . $offer->cover) : 'https://placehold.co/600x400?text=Offer' }}');">
+
+                            <span class="badge-offer">عرض</span>
+
+                            @if ($offer->featured)
+                                <span class="badge-featured">مميز</span>
+                            @endif
+                        </div>
+
+                        {{-- Body --}}
+                        <div class="card-body p-3 text-center">
+                            <h3>{{ $offer->name }}</h3>
+
+                            <p class="text-muted small">
+                                {{ \Illuminate\Support\Str::limit($offer->description, 80) }}
+                            </p>
+
+                            {{-- Prices --}}
+                            <div class="price-box mt-2">
+                                @if ($offer->original_price)
+                                    <span class="old-price">
+                                        {{ number_format($offer->original_price, 2) }} ج
+                                    </span>
+                                @endif
+
+                                <span class="new-price">
+                                    {{ number_format($offer->price, 2) }} ج
+                                </span>
+                            </div>
+
+                            <a href="#" class="btn btn-primary mt-3">
+                                عرض التفاصيل
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
 
     <!-- Latest Apartments Section -->
     <section class="section-padding">

@@ -170,6 +170,106 @@ ul {
     grid-template-columns: repeat(4, 1fr);
 }
 
+
+.card {
+    overflow: hidden;
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0,0,0,.12);
+}
+
+/* Image Wrapper */
+.card-image {
+    height: 220px;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    transition: transform .4s ease;
+}
+
+/* Zoom effect on hover */
+.card:hover .card-image {
+    transform: scale(1.08);
+}
+
+.badge-featured {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: var(--secondary-color);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 6px;
+    box-shadow: 0 6px 15px rgba(0,0,0,.25);
+    z-index: 2;
+    letter-spacing: .5px;
+}
+
+/* Animation subtle */
+.card:hover .badge-featured {
+    transform: scale(1.05);
+    transition: transform .3s ease;
+}
+
+/* Offer badge */
+.badge-offer {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: linear-gradient(135deg, #e91e63, #ff5722);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,.25);
+    z-index: 2;
+}
+
+/* Featured badge (reuse) */
+.badge-featured {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: var(--primary-color);
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+/* Prices */
+.price-box {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.85rem;
+}
+
+.new-price {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
 /* Tablet (max-width: 1024px) */
 @media (max-width: 1024px) {
     .grid-cols-4 {
