@@ -410,7 +410,7 @@
             </div>
         </div>
     </div>
-
+    {{-- 
     <div class="related-apartments container" style="margin-top: 5rem; border-top: 1px solid #e2e8f0; padding-top: 4rem;">
         <div class="d-flex justify-between align-center" style="margin-bottom: 2rem;">
             <div>
@@ -453,7 +453,7 @@
                 @endforeach
             </div>
         </div>
-    </div>
+    </div> --}}
 @endsection
 
 @push('scripts')

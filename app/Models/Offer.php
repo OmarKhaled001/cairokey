@@ -11,9 +11,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Offer extends Model implements HasMedia
+class Offer extends Model
 {
-    use HasFactory,  HasSlug, InteractsWithMedia;
+    use HasFactory,  HasSlug;
 
     protected $fillable = [
         'name',
@@ -45,15 +45,42 @@ class Offer extends Model implements HasMedia
     {
         return SlugOptions::create()
             ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
+            ->saveSlugsTo('slug')->usingLanguage('ar');
     }
+
+    public function getOfferItemsAttribute()
+    {
+        return collect($this->items ?? [])->map(function ($item) {
+            if (!isset($item['bookable_type'], $item['bookable_id'])) return null;
+
+            $modelClass = $item['bookable_type'];
+            if (!class_exists($modelClass)) return null;
+
+            $record = $modelClass::find($item['bookable_id']);
+            if (!$record) return null;
+
+            $days = $item['days'] ?? 1;
+
+            // Determine label based on type
+            $typeLabel = match ($modelClass) {
+                'App\Models\Car' => 'سيارة',
+                'App\Models\Apartment' => 'شقة',
+                'App\Models\Hotel' => 'فندق',
+                'App\Models\Service' => 'خدمة',
+                default => 'عنصر'
+            };
+
+            $description = "{$typeLabel}: {$record->name}";
+            if ($modelClass !== 'App\Models\Service') {
+                $description .= " ( لمدة {$days} يوم )";
+            }
+
+            return $description;
+        })->filter();
+    }
+
     public function bookings()
     {
         return $this->morphMany(Booking::class, 'bookable');
-    }
-
-    public function reviews()
-    {
-        return $this->morphMany(Review::class, 'reviewable');
     }
 }

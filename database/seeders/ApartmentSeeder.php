@@ -1,6 +1,7 @@
 <?php
 
-namespace Database\Seeders;
+
+namespace Database\seeders;
 
 use App\Models\Apartment;
 use Illuminate\Database\Seeder;
@@ -11,7 +12,7 @@ class ApartmentSeeder extends Seeder
     {
         $apartments = [
             [
-                'name' => 'شقة فاخرة بإطلالة على النيل - القاهرة',
+                'name' => 'شقة فاخرة بإطلالة على النيل',
                 'description' => 'شقة عصرية بفرش فخم في قلب القاهرة، إطلالة مباشرة على نهر النيل.',
                 'governorate' => 'القاهرة',
                 'city' => 'الزمالك',
@@ -23,9 +24,10 @@ class ApartmentSeeder extends Seeder
                 'active' => true,
                 'featured' => true,
                 'tags' => ['إطلالة نيلية', 'مفروش فاخر', 'واي فاي مجاني'],
+                'images' => [], // أضف مصفوفة فارغة لتجنب مشاكل الـ Cast
             ],
             [
-                'name' => 'استوديو أنيق وقريب من الشاطئ - الإسكندرية',
+                'name' => 'استوديو أنيق وقريب من الشاطئ',
                 'description' => 'استوديو مميز قريب جدًا من البحر.',
                 'governorate' => 'الإسكندرية',
                 'city' => 'لوران',
@@ -37,9 +39,10 @@ class ApartmentSeeder extends Seeder
                 'active' => true,
                 'featured' => false,
                 'tags' => ['قرب البحر', 'استوديو', 'إيجار اقتصادي'],
+                'images' => [],
             ],
             [
-                'name' => 'شقة عائلية هادئة - الجيزة',
+                'name' => 'شقة عائلية هادئة',
                 'description' => 'شقة كبيرة مناسبة للعائلات.',
                 'governorate' => 'الجيزة',
                 'city' => 'الشيخ زايد',
@@ -51,18 +54,13 @@ class ApartmentSeeder extends Seeder
                 'active' => true,
                 'featured' => false,
                 'tags' => ['عائلات', 'منطقة هادئة', 'موقف خاص'],
+                'images' => [],
             ],
         ];
 
         foreach ($apartments as $data) {
-            $tags = $data['tags'] ?? [];
-            unset($data['tags']);
-
-            $apartment = Apartment::create($data);
-
-            if ($tags) {
-                $apartment->syncTags($tags);
-            }
+            // نستخدم updateOrCreate بناءً على الاسم لمنع التكرار
+            Apartment::updateOrCreate(['name' => $data['name']], $data);
         }
     }
 }

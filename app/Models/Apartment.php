@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Apartment extends Model implements HasMedia
+class Apartment extends Model
 {
-    use HasFactory, HasSlug, InteractsWithMedia;
+    use HasFactory, HasSlug;
 
     protected $fillable = [
         'name',
@@ -47,16 +47,11 @@ class Apartment extends Model implements HasMedia
     {
         return SlugOptions::create()
             ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
+            ->saveSlugsTo('slug')->usingLanguage('ar');
     }
 
     public function bookings()
     {
         return $this->morphMany(Booking::class, 'bookable');
-    }
-
-    public function reviews()
-    {
-        return $this->morphMany(Review::class, 'reviewable');
     }
 }

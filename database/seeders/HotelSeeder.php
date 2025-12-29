@@ -12,7 +12,7 @@ class HotelSeeder extends Seeder
     {
         $hotels = [
             [
-                'name' => 'فندق النيل البانورامي - القاهرة',
+                'name' => 'فندق النيل البانورامي',
                 'description' => 'فندق فاخر في قلب القاهرة بإطلالة مباشرة على النيل، قريب من المناطق السياحية والخدمات.',
                 'governorate' => 'القاهرة',
                 'city' => 'الزمالك',
@@ -25,7 +25,7 @@ class HotelSeeder extends Seeder
                 'tags' => ['إطلالة نيلية', 'إفطار مجاني', 'واي فاي', 'مسبح', 'مطعم فاخر'],
             ],
             [
-                'name' => 'فندق الشاطئ الأزرق - الإسكندرية',
+                'name' => 'فندق الشاطئ الأزرق',
                 'description' => 'فندق مريح على البحر مباشرة، مناسب للعائلات ومحبي الأجواء الهادئة.',
                 'governorate' => 'الإسكندرية',
                 'city' => 'سيدي بشر',
@@ -38,7 +38,7 @@ class HotelSeeder extends Seeder
                 'tags' => ['قرب البحر', 'إطلالة بحرية', 'مطعم', 'موقف سيارات', 'مكيف'],
             ],
             [
-                'name' => 'منتجع صن رايز - الغردقة',
+                'name' => 'منتجع صن رايز',
                 'description' => 'منتجع فاخر على البحر الأحمر يقدم أنشطة مائية وخدمات ترفيهية عالمية.',
                 'governorate' => 'البحر الأحمر',
                 'city' => 'الغردقة',
@@ -53,14 +53,7 @@ class HotelSeeder extends Seeder
         ];
 
         foreach ($hotels as $data) {
-            $tags = $data['tags'] ?? [];
-            unset($data['tags']);
-
-            $hotel = Hotel::create($data);
-
-            if ($tags) {
-                $hotel->syncTags($tags);
-            }
+            Hotel::create($data);
         }
     }
 }

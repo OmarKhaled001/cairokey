@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HotelController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\Auth\ClientAuthController;
 
@@ -14,8 +15,8 @@ use App\Http\Controllers\Auth\ClientAuthController;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::view('/contact', 'contact')->name('contact');
 
+Route::get('search', [HomeController::class, 'search'])->name('search');
 /*
 |--------------------------------------------------------------------------
 | Apartments (Public)
@@ -44,6 +45,26 @@ Route::prefix('cars')->name('cars.')->group(function () {
 Route::prefix('hotels')->name('hotels.')->group(function () {
     Route::get('/', [HotelController::class, 'index'])->name('index');
     Route::get('/{hotel:slug}', [HotelController::class, 'show'])->name('show');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Services (Public)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('services')->name('services.')->group(function () {
+    Route::get('/', [ServiceController::class, 'index'])->name('index');
+    Route::get('/{service:slug}', [ServiceController::class, 'show'])->name('show');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Offers (Public)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('offers')->name('offers.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\OfferController::class, 'index'])->name('index');
+    Route::get('/{offer:slug}', [\App\Http\Controllers\OfferController::class, 'show'])->name('show');
 });
 
 /*

@@ -10,25 +10,18 @@ class ServiceSeeder extends Seeder
     public function run(): void
     {
         $services = [
+
             [
-                'name' => 'خدمة تنظيف الشقق',
-                'description' => 'تنظيف شامل قبل وبعد الإقامة.',
-                'price' => 300,
-                'active' => true,
-                'featured' => true,
-                'tags' => ['تنظيف', 'تعقيم', 'خدمة سريعة'],
-            ],
-            [
-                'name' => 'خدمة سائق خاص',
-                'description' => 'سائق محترف داخل المدينة.',
+                'name' => 'حجز تذاكر الطيران',
+                'description' => 'خدمة حجز تذاكر الطيران.',
                 'price' => 500,
                 'active' => true,
                 'featured' => false,
-                'tags' => ['سائق', 'تنقل', 'راحة'],
+                'tags' => ['تذاكر طيران', 'حجز', 'طيران'],
             ],
             [
                 'name' => 'استقبال من المطار',
-                'description' => 'استقبال VIP من وإلى المطار.',
+                'description' => 'خدمة استقبال من وإلى المطار.',
                 'price' => 700,
                 'active' => true,
                 'featured' => true,
@@ -37,14 +30,7 @@ class ServiceSeeder extends Seeder
         ];
 
         foreach ($services as $data) {
-            $tags = $data['tags'] ?? [];
-            unset($data['tags']);
-
-            $service = Service::create($data);
-
-            if ($tags) {
-                $service->syncTags($tags);
-            }
+            Service::create($data);
         }
     }
 }

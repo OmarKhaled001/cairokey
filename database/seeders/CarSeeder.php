@@ -99,7 +99,7 @@ class CarSeeder extends Seeder
                 'brand' => 'هوندا',
                 'model' => 'سيفيك',
                 'year' => 2021,
-                'price_per_day' => 200.00,
+                'price_per_day' => 250.00,
                 'rating' => 4,
                 'active' => true,
                 'featured' => false,
@@ -114,14 +114,7 @@ class CarSeeder extends Seeder
         ];
 
         foreach ($cars as $data) {
-            $tags = $data['tags'] ?? [];
-            unset($data['tags']);
-
-            $car = Car::create($data);
-
-            if ($tags) {
-                $car->syncTags($tags);
-            }
+            Car::create($data);
         }
     }
 }

@@ -6,7 +6,9 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Tabs\Tab;
 use Mokhosh\FilamentRating\Components\Rating;
@@ -49,6 +51,9 @@ class ServiceForm
                                             ->columnSpanFull()
                                             ->label('الوصف التفصيلي للخدمة')
                                             ->rows(5),
+                                        TagsInput::make('tags')
+                                            ->label('المميزات')
+                                            ->columnSpanFull(),
                                     ]),
 
                                 Fieldset::make('الحالة والتقييم')
@@ -77,25 +82,13 @@ class ServiceForm
                             ->label('الوسائط (صور وفيديوهات)')
                             ->icon('heroicon-o-photo')
                             ->schema([
-                                SpatieMediaLibraryFileUpload::make('cover')
-                                    ->collection('cover')
-                                    ->directory('apartments/cover')
+                                FileUpload::make('cover')
+                                    ->disk('public')
+                                    ->visibility('public')
+                                    ->directory('services/covers')
                                     ->label('الغلاف')
                                     ->image()
-                                    ->columnSpanFull()
-                                    ->preserveFilenames(),
-
-                                SpatieMediaLibraryFileUpload::make('images')
-                                    ->collection('images')
-                                    ->directory('apartments/images')
-                                    ->label('الصور')
-                                    ->multiple()
-                                    ->image()
-                                    ->columnSpanFull()
-                                    ->preserveFilenames()
-                                    ->reorderable()
-                                    ->panelLayout('grid')
-                                    ->helperText('يمكنك تحميل صور متعددة وإعادة ترتيبها.'),
+                                    ->columnSpanFull(),
 
 
                             ]),
