@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('name', 'الشقق المتاحة - كايرو كي')
+@section('name', 'الفنادق المتاحة - كايرو كي')
 
 @push('styles')
     <style>
@@ -248,7 +248,14 @@
 
         .rating-filter-option.selected {
             border-color: var(--primary-color);
+            border-width: 2px;
             background: rgba(var(--primary-rgb), 0.1);
+            box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.2);
+        }
+
+        .rating-filter-option.selected .label {
+            color: var(--primary-color);
+            font-weight: 700;
         }
 
         .rating-filter-option input[type="radio"] {
@@ -459,7 +466,7 @@
         <div class="grid main-layout" style="grid-template-columns: 300px 1fr; gap: 2.5rem; display: grid;">
 
             <aside id="filterSidebar">
-                <form action="{{ route('apartments.index') }}" method="GET" class="filter-sidebar">
+                <form action="{{ route('hotels.index') }}" method="GET" class="filter-sidebar">
 
                     <!-- Header للموبايل فقط -->
                     <div class="filter-mobile-header" style="display: none;">
@@ -519,6 +526,63 @@
                                 value="{{ request('price_max', $maxAvailablePrice) }}">
                         </div>
                     </div>
+
+                    <div class="filter-group">
+                        <label>
+                            <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                            التقييم
+                        </label>
+                        <div class="rating-filter-options">
+                            <label class="rating-filter-option {{ !request('rating') ? 'selected' : '' }}">
+                                <input type="radio" name="rating" value=""
+                                    {{ !request('rating') ? 'checked' : '' }}>
+                                <div class="stars">
+                                    <i class="fas fa-star" style="color: #94a3b8;"></i>
+                                </div>
+                                <span class="label">جميع التقييمات</span>
+                            </label>
+
+                            <label class="rating-filter-option {{ request('rating') == '5' ? 'selected' : '' }}">
+                                <input type="radio" name="rating" value="5"
+                                    {{ request('rating') == '5' ? 'checked' : '' }}>
+                                <div class="stars">
+                                    <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                                    <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                                    <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                                    <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                                    <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                                </div>
+                                <span class="label">5 نجوم</span>
+                            </label>
+
+                            <label class="rating-filter-option {{ request('rating') == '4' ? 'selected' : '' }}">
+                                <input type="radio" name="rating" value="4"
+                                    {{ request('rating') == '4' ? 'checked' : '' }}>
+                                <div class="stars">
+                                    <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                                    <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                                    <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                                    <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                                    <i class="far fa-star" style="color: #E0E0E0;"></i>
+                                </div>
+                                <span class="label">4+ نجوم</span>
+                            </label>
+
+                            <label class="rating-filter-option {{ request('rating') == '3' ? 'selected' : '' }}">
+                                <input type="radio" name="rating" value="3"
+                                    {{ request('rating') == '3' ? 'checked' : '' }}>
+                                <div class="stars">
+                                    <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                                    <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                                    <i class="fas fa-star" style="color: var(--primary-color);"></i>
+                                    <i class="far fa-star" style="color: #E0E0E0;"></i>
+                                    <i class="far fa-star" style="color: #E0E0E0;"></i>
+                                </div>
+                                <span class="label">3+ نجوم</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="filter-group">
                         <label>ترتيب حسب</label>
                         <select name="sort" class="form-control-custom">
@@ -538,7 +602,7 @@
                     </button>
 
                     @if (request()->anyFilled(['governorate', 'city', 'price_min', 'price_max', 'rating', 'sort']))
-                        <a href="{{ route('apartments.index') }}"
+                        <a href="{{ route('hotels.index') }}"
                             style="display: block; text-align: center; margin-top: 1rem; color: #64748b; font-size: 0.8rem;">
                             إعادة ضبط
                         </a>
@@ -547,37 +611,35 @@
             </aside>
 
             <main>
-                @if ($apartments->count() > 0)
+                @if ($hotels->count() > 0)
                     <div class="grid grid-cols-3 gap-4">
-                        @foreach ($apartments as $apartment)
+                        @foreach ($hotels as $hotel)
                             <div
                                 style="background: var(--bg-light); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--card-shadow);">
 
                                 <div
-                                    style="height: 230px; background-image: url('{{ $apartment->cover ? asset('storage/' . $apartment->cover) : 'https://placehold.co/600x400?text=apartment' }}'); background-size: cover; background-position: center;">
+                                    style="height: 230px; background-image: url('{{ $hotel->cover ? asset('storage/' . $hotel->cover) : 'https://placehold.co/600x400?text=hotel' }}'); background-size: cover; background-position: center;">
                                 </div>
 
                                 <div style="padding: 1.5rem;">
-                                    <h3 style="margin-bottom: 0.75rem;">{{ $apartment->name }}</h3>
+                                    <h3 style="margin-bottom: 0.75rem;">{{ $hotel->name }}</h3>
 
-                                    {{-- Star Rating - if apartments have ratings --}}
-                                    {{-- Uncomment when apartment ratings are implemented
                                     <div style="margin-bottom: 0.75rem;">
-                                        <x-star-rating :rating="$apartment->average_rating" :reviewsCount="0" :showCount="false" size="sm" />
+                                        <x-star-rating :rating="$hotel->average_rating" :reviewsCount="0" :showCount="false"
+                                            size="sm" />
                                     </div>
-                                    --}}
 
                                     <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
                                         <i class="fas fa-map-marker-alt"></i>
-                                        {{ $apartment->city }}
+                                        {{ $hotel->city }}
                                     </p>
 
                                     <div class="d-flex justify-between align-center" style="margin-top: 1rem;">
                                         <span style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">
-                                            ${{ $apartment->price_per_night }} / ليلة
+                                            ${{ $hotel->price_per_night }} / ليلة
                                         </span>
 
-                                        <a href="{{ route('apartments.show', $apartment->slug) }}" class="btn btn-primary"
+                                        <a href="{{ route('hotels.show', $hotel->slug) }}" class="btn btn-primary"
                                             style="padding: 0.5rem 1rem;">
                                             التفاصيل
                                         </a>
@@ -588,7 +650,7 @@
                     </div>
 
                     <div class="pagination-wrapper">
-                        {{ $apartments->links() }}
+                        {{ $hotels->links() }}
                     </div>
                 @else
                     {{-- Modern Empty State --}}
@@ -600,15 +662,15 @@
 
                         <h3
                             style="font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 1rem;">
-                            لم نجد أي شقق
+                            لم نجد أي فنادق
                         </h3>
 
                         <p
                             style="font-size: 1.1rem; color: #64748b; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
-                            لا توجد شقق تطابق معايير البحث. جرب تعديل الفلاتر أو البحث مرة أخرى.
+                            لا توجد فنادق تطابق معايير البحث. جرب تعديل الفلاتر أو البحث مرة أخرى.
                         </p>
 
-                        <a href="{{ route('apartments.index') }}" class="btn btn-primary"
+                        <a href="{{ route('hotels.index') }}" class="btn btn-primary"
                             style="padding: 0.875rem 2rem; border-radius: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
                             <i class="fas fa-redo"></i>
                             <span>إعادة تعيين الفلاتر</span>
@@ -657,6 +719,19 @@
             if (window.innerWidth <= 768) {
                 document.querySelector('.filter-mobile-header').style.display = 'none';
             }
+
+            // Rating filter click handlers
+            const ratingOptions = document.querySelectorAll('.rating-filter-option');
+            ratingOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all
+                    ratingOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Add selected class to clicked
+                    this.classList.add('selected');
+                    // Check the radio button
+                    this.querySelector('input[type="radio"]').checked = true;
+                });
+            });
         });
     </script>
 @endsection

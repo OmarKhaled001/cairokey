@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CarController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\HotelController;
 use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\Auth\ClientAuthController;
 
@@ -23,6 +25,25 @@ Route::view('/contact', 'contact')->name('contact');
 Route::prefix('apartments')->name('apartments.')->group(function () {
     Route::get('/', [ApartmentController::class, 'index'])->name('index');
     Route::get('/{apartment:slug}', [ApartmentController::class, 'show'])->name('show');
+});
+/*
+|--------------------------------------------------------------------------
+| Cars (Public)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('cars')->name('cars.')->group(function () {
+    Route::get('/', [CarController::class, 'index'])->name('index');
+    Route::get('/{car:slug}', [CarController::class, 'show'])->name('show');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Hotels (Public)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('hotels')->name('hotels.')->group(function () {
+    Route::get('/', [HotelController::class, 'index'])->name('index');
+    Route::get('/{hotel:slug}', [HotelController::class, 'show'])->name('show');
 });
 
 /*

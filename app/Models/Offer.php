@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Offer extends Model implements HasMedia
 {
-    use HasFactory, HasTags, HasSlug, InteractsWithMedia;
+    use HasFactory,  HasSlug, InteractsWithMedia;
 
     protected $fillable = [
         'name',

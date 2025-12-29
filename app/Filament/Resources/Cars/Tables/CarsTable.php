@@ -9,6 +9,7 @@ use Filament\Actions\ViewAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Tables\Columns\SpatieTagsColumn;
@@ -35,8 +36,7 @@ class CarsTable
                     ->badge()
                     ->color('danger')
                     ->sortable(),
-                SpatieTagsColumn::make('tags')
-                    ->type('features')
+                TagsColumn::make('tags')
                     ->limitList(2)
                     ->label('المميزات'),
                 TextColumn::make('price_per_day')

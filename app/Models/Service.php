@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Service extends Model implements HasMedia
 {
-    use HasFactory, HasSlug, HasTags, InteractsWithMedia;
+    use HasFactory, HasSlug,  InteractsWithMedia;
 
     protected $fillable = [
         'name',

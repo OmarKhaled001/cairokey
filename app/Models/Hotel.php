@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Hotel extends Model implements HasMedia
 {
-    use HasFactory, HasSlug, HasTags, InteractsWithMedia;
+    use HasFactory, HasSlug,  InteractsWithMedia;
 
     protected $fillable = [
         'name',
@@ -39,6 +39,20 @@ class Hotel extends Model implements HasMedia
         'images' => 'array',
         'tags' => 'array',
     ];
+
+    protected $appends = ['average_rating', 'reviews_count'];
+
+    public function getAverageRatingAttribute()
+    {
+        // Use the rating field from hotels table directly
+        return $this->rating ?? 0;
+    }
+
+    public function getReviewsCountAttribute()
+    {
+        // Not using reviews, return 0 or optionally remove this
+        return 0;
+    }
 
     public function getSlugOptions(): SlugOptions
     {

@@ -134,7 +134,21 @@
                                 <h3>{{ $item->name ?? $item->title }}</h3>
 
 
-                                <a href="#" class="btn btn-primary mt-2">عرض التفاصيل</a>
+                                @php
+                                    // تحديد المسار بناءً على نوع الموديل
+                                    $route = '#';
+                                    if ($item instanceof \App\Models\Apartment) {
+                                        $route = route('apartments.show', $item->slug);
+                                    } elseif ($item instanceof \App\Models\Hotel) {
+                                        $route = route('hotels.show', $item->id); // أو slug إذا توفر
+                                    } elseif ($item instanceof \App\Models\Car) {
+                                        $route = route('cars.show', $item->id);
+                                    } elseif ($item instanceof \App\Models\Offer) {
+                                        $route = route('offers.show', $item->id);
+                                    }
+                                @endphp
+
+                                <a href="{{ $route }}" class="btn btn-primary mt-2">عرض التفاصيل</a>
                             </div>
 
                         </div>
@@ -265,7 +279,7 @@
                         <div
                             style="background: var(--bg-light); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--card-shadow);">
                             <div
-                                style="height: 250px; background-color: #ddd; background-image: url('https://placehold.co/600x400?text=Mercedes'); background-size: cover;">
+                                style="height: 250px; background-color: #ddd; background-image: url({{ $car->cover ? asset('storage/' . $car->cover) : 'https://placehold.co/600x400?text=Image' }}); background-size: cover;">
                             </div>
                             <div style="padding: 1.5rem;">
                                 <h3>{{ $car->name }}</h3>
@@ -275,7 +289,7 @@
                                     {{ $car->year }}</p>
                                 <div class="d-flex justify-between align-center" style="margin-top: 1rem;">
                                     <span
-                                        style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">{{ $car->price_per_day }}
+                                        style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">${{ $car->price_per_day }}
                                         /
                                         يوم</span>
                                     <a href="#" class="btn btn-primary" style="padding: 0.5rem 1rem;">التفاصيل</a>

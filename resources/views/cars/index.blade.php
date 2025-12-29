@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('name', 'الشقق المتاحة - كايرو كي')
+@section('name', 'السيارات المتاحة - كايرو كي')
 
 @push('styles')
     <style>
@@ -13,17 +13,17 @@
             font-family: "Cairo";
         }
 
-        .hero-hotels {
-            height: 35vh;
-            background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)),
-                url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80');
+        .hero-cars {
+            height: 30vh;
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)),
+                url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1500&q=80');
             background-size: cover;
             background-position: center;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            margin-bottom: 3rem;
+            text-align: center;
         }
 
         /* تصميم الفلاتر - Desktop */
@@ -98,7 +98,7 @@
             opacity: 1;
         }
 
-        /* تصميم كروت الشقق */
+        /* تصميم كروت السيارات */
         .apt-card {
             background: white;
             border-radius: 20px;
@@ -227,43 +227,6 @@
             box-shadow: 0 0 0 8px rgba(var(--primary-rgb), 0.1);
         }
 
-        /* Rating Filter Styles */
-        .rating-filter-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 0.75rem 1rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            margin-bottom: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .rating-filter-option:hover {
-            border-color: var(--primary-color);
-            background: #f8fafc;
-        }
-
-        .rating-filter-option.selected {
-            border-color: var(--primary-color);
-            background: rgba(var(--primary-rgb), 0.1);
-        }
-
-        .rating-filter-option input[type="radio"] {
-            display: none;
-        }
-
-        .rating-filter-option .stars {
-            font-size: 16px;
-        }
-
-        .rating-filter-option .label {
-            color: #64748b;
-            font-size: 0.85rem;
-        }
-
         /* Empty State Styles */
         .empty-state {
             animation: fadeInUp 0.6s ease-out;
@@ -299,13 +262,12 @@
 
         /* تحسينات الموبايل */
         @media (max-width: 768px) {
-            .hero-hotels {
+            .hero-cars {
                 height: 25vh;
-                margin-bottom: 2rem;
             }
 
-            .hero-hotels h1 {
-                font-size: 2rem !important;
+            .hero-cars h1 {
+                font-size: 1.8rem !important;
             }
 
             .main-layout {
@@ -385,14 +347,14 @@
                 background: #e2e8f0;
             }
 
-            /* Grid الشقق */
+            /* Grid السيارات */
             .grid-cols-3 {
                 grid-template-columns: 1fr !important;
             }
 
             /* تصغير حجم الكروت */
             .apt-image {
-                height: 200px;
+                height: 180px;
             }
 
             /* تحسين الـ Pagination */
@@ -402,11 +364,6 @@
                 height: 35px;
                 padding: 0 10px;
                 font-size: 0.85rem;
-            }
-
-            .section-padding {
-                padding-top: 2rem;
-                padding-bottom: 2rem;
             }
         }
 
@@ -429,20 +386,16 @@
                 padding: 12px 25px;
                 font-size: 0.9rem;
             }
-
-            .hero-hotels h1 {
-                font-size: 1.6rem !important;
-            }
         }
     </style>
 @endpush
 
 @section('content')
 
-    <section class="hero-hotels">
+    <section class="hero-cars">
         <div class="container text-center">
-            <h1 style="font-weight: 800; font-size: 3rem;">اكتشف ملاذك القادم</h1>
-            <p style="opacity: 0.9;">أفضل الشقق المختارة بعناية لتناسب ذوقك</p>
+            <h1 style="font-weight: 800; font-size: 2.5rem; margin-bottom: 0.5rem;">أسطول سياراتنا الفاخرة</h1>
+            <p style="opacity: 0.9;">اختر سيارتك المثالية لرحلتك القادمة</p>
         </div>
     </section>
 
@@ -459,7 +412,7 @@
         <div class="grid main-layout" style="grid-template-columns: 300px 1fr; gap: 2.5rem; display: grid;">
 
             <aside id="filterSidebar">
-                <form action="{{ route('apartments.index') }}" method="GET" class="filter-sidebar">
+                <form action="{{ route('cars.index') }}" method="GET" class="filter-sidebar">
 
                     <!-- Header للموبايل فقط -->
                     <div class="filter-mobile-header" style="display: none;">
@@ -479,29 +432,40 @@
                     </h4>
 
                     <div class="filter-group">
-                        <label>المحافظة</label>
-                        <select name="governorate" class="form-control-custom">
-                            <option value="">كل المحافظات</option>
-                            @foreach ($governorates as $gov)
-                                <option value="{{ $gov }}" {{ request('governorate') == $gov ? 'selected' : '' }}>
-                                    {{ $gov }}</option>
+                        <label>السنة</label>
+                        <select name="year" class="form-control-custom">
+                            <option value="">كل السنوات</option>
+                            @foreach ($years as $year)
+                                <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>
+                                    {{ $year }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="filter-group">
-                        <label>المدينة</label>
-                        <select name="city" class="form-control-custom">
-                            <option value="">كل المدن</option>
-                            @foreach ($cities as $city)
-                                <option value="{{ $city }}" {{ request('city') == $city ? 'selected' : '' }}>
-                                    {{ $city }}</option>
+                        <label>العلامة التجارية</label>
+                        <select name="brand" class="form-control-custom">
+                            <option value="">كل العلامات التجارية</option>
+                            @foreach ($brands as $brand)
+                                <option value="{{ $brand }}" {{ request('brand') == $brand ? 'selected' : '' }}>
+                                    {{ $brand }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="filter-group">
-                        <label>نطاق السعر (بالليلة)</label>
+                        <label>الموديل</label>
+                        <select name="model" class="form-control-custom">
+                            <option value="">كل الموديلات</option>
+                            @foreach ($models as $model)
+                                <option value="{{ $model }}" {{ request('model') == $model ? 'selected' : '' }}>
+                                    {{ $model }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>نطاق السعر (باليوم)</label>
                         <div class="price-range-container" style="padding: 10px 5px 30px;">
                             <input type="range" id="priceRange" min="{{ $minAvailablePrice }}"
                                 max="{{ $maxAvailablePrice }}" value="{{ request('price_max', $maxAvailablePrice) }}"
@@ -519,13 +483,11 @@
                                 value="{{ request('price_max', $maxAvailablePrice) }}">
                         </div>
                     </div>
+
                     <div class="filter-group">
                         <label>ترتيب حسب</label>
                         <select name="sort" class="form-control-custom">
                             <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>الأحدث أولاً
-                            </option>
-                            <option value="highest_rated" {{ request('sort') == 'highest_rated' ? 'selected' : '' }}>
-                                الأعلى تقييماً
                             </option>
                             <option value="lowest_price" {{ request('sort') == 'lowest_price' ? 'selected' : '' }}>السعر:
                                 من الأقل</option>
@@ -537,8 +499,8 @@
                         تطبيق الفلتر
                     </button>
 
-                    @if (request()->anyFilled(['governorate', 'city', 'price_min', 'price_max', 'rating', 'sort']))
-                        <a href="{{ route('apartments.index') }}"
+                    @if (request()->anyFilled(['governorate', 'city', 'price_min', 'price_max', 'sort']))
+                        <a href="{{ route('cars.index') }}"
                             style="display: block; text-align: center; margin-top: 1rem; color: #64748b; font-size: 0.8rem;">
                             إعادة ضبط
                         </a>
@@ -547,40 +509,25 @@
             </aside>
 
             <main>
-                @if ($apartments->count() > 0)
+                @if ($cars->count() > 0)
                     <div class="grid grid-cols-3 gap-4">
-                        @foreach ($apartments as $apartment)
+                        @foreach ($cars as $car)
                             <div
                                 style="background: var(--bg-light); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--card-shadow);">
-
                                 <div
-                                    style="height: 230px; background-image: url('{{ $apartment->cover ? asset('storage/' . $apartment->cover) : 'https://placehold.co/600x400?text=apartment' }}'); background-size: cover; background-position: center;">
+                                    style="height: 250px; background-color: #ddd; background-image: url({{ $car->cover ? asset('storage/' . $car->cover) : 'https://placehold.co/600x400?text=Image' }}); background-size: cover;">
                                 </div>
-
                                 <div style="padding: 1.5rem;">
-                                    <h3 style="margin-bottom: 0.75rem;">{{ $apartment->name }}</h3>
-
-                                    {{-- Star Rating - if apartments have ratings --}}
-                                    {{-- Uncomment when apartment ratings are implemented
-                                    <div style="margin-bottom: 0.75rem;">
-                                        <x-star-rating :rating="$apartment->average_rating" :reviewsCount="0" :showCount="false" size="sm" />
-                                    </div>
-                                    --}}
-
+                                    <h3>{{ $car->name }}</h3>
                                     <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        {{ $apartment->city }}
+                                        {{ $car->model }} - {{ $car->year }}
                                     </p>
-
                                     <div class="d-flex justify-between align-center" style="margin-top: 1rem;">
                                         <span style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">
-                                            ${{ $apartment->price_per_night }} / ليلة
+                                            ${{ $car->price_per_day }} / يوم
                                         </span>
-
-                                        <a href="{{ route('apartments.show', $apartment->slug) }}" class="btn btn-primary"
-                                            style="padding: 0.5rem 1rem;">
-                                            التفاصيل
-                                        </a>
+                                        <a href="{{ route('cars.show', $car) }}" class="btn btn-primary"
+                                            style="padding: 0.5rem 1rem;">التفاصيل</a>
                                     </div>
                                 </div>
                             </div>
@@ -588,7 +535,7 @@
                     </div>
 
                     <div class="pagination-wrapper">
-                        {{ $apartments->links() }}
+                        {{ $cars->links() }}
                     </div>
                 @else
                     {{-- Modern Empty State --}}
@@ -600,15 +547,15 @@
 
                         <h3
                             style="font-size: 1.8rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 1rem;">
-                            لم نجد أي شقق
+                            لم نجد أي سيارات
                         </h3>
 
                         <p
                             style="font-size: 1.1rem; color: #64748b; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
-                            لا توجد شقق تطابق معايير البحث. جرب تعديل الفلاتر أو البحث مرة أخرى.
+                            لا توجد سيارات تطابق معايير البحث. جرب تعديل الفلاتر أو البحث مرة أخرى.
                         </p>
 
-                        <a href="{{ route('apartments.index') }}" class="btn btn-primary"
+                        <a href="{{ route('cars.index') }}" class="btn btn-primary"
                             style="padding: 0.875rem 2rem; border-radius: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
                             <i class="fas fa-redo"></i>
                             <span>إعادة تعيين الفلاتر</span>
@@ -628,7 +575,7 @@
         function openFilter() {
             document.getElementById('filterSidebar').classList.add('active');
             document.getElementById('filterOverlay').classList.add('active');
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden'; // منع السكرول
 
             // إظهار header الموبايل وإخفاء header الديسكتوب
             if (window.innerWidth <= 768) {
@@ -640,7 +587,7 @@
         function closeFilter() {
             document.getElementById('filterSidebar').classList.remove('active');
             document.getElementById('filterOverlay').classList.remove('active');
-            document.body.style.overflow = '';
+            document.body.style.overflow = ''; // إعادة السكرول
         }
 
         // إغلاق الفلتر عند تغيير حجم الشاشة للديسكتوب

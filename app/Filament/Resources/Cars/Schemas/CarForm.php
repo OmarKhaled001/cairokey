@@ -6,7 +6,9 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Tabs\Tab;
 use Mokhosh\FilamentRating\Components\Rating;
@@ -45,8 +47,7 @@ class CarForm
                                             ->columnSpanFull()
                                             ->label('الوصف')
                                             ->rows(5),
-                                        SpatieTagsInput::make('tags')
-                                            ->type('features')
+                                        TagsInput::make('tags')
                                             ->label('المميزات')
                                             ->columnSpanFull(),
                                     ]),
@@ -86,12 +87,6 @@ class CarForm
                                             ->default(0)
                                             ->label('السعر لليوم'),
 
-                                        Rating::make('rating')
-                                            ->required()
-                                            ->color('info')
-                                            ->default(5)
-                                            ->label('التقييم'),
-
                                         Toggle::make('active')
                                             ->required()
                                             ->default(true)
@@ -111,25 +106,26 @@ class CarForm
                             ->label('الوسائط (صور)')
                             ->icon('heroicon-o-photo')
                             ->schema([
-                                SpatieMediaLibraryFileUpload::make('cover')
-                                    ->collection('cover')
-                                    ->directory('cars/cover')
+                                FileUpload::make('cover')
+                                    ->disk('public')
+                                    ->visibility('public')
+                                    ->directory('cars/covers')
                                     ->label('الغلاف')
                                     ->image()
-                                    ->columnSpanFull()
-                                    ->preserveFilenames(),
+                                    ->columnSpanFull(),
 
-                                SpatieMediaLibraryFileUpload::make('images')
-                                    ->collection('images')
-                                    ->directory('cars/images')
-                                    ->label('الصور')
-                                    ->multiple()
-                                    ->image()
-                                    ->columnSpanFull()
-                                    ->preserveFilenames()
-                                    ->panelLayout('grid')
-                                    ->reorderable()
-                                    ->helperText('يمكنك تحميل صور متعددة وإعادة ترتيبها.'),
+                                // FileUpload::make('images')
+                                //     ->disk('public')
+                                //     ->visibility('public')
+                                //     ->directory('cars/images')
+                                //     ->label('الصور')
+                                //     ->multiple()
+                                //     ->image()
+                                //     ->columnSpanFull()
+                                //     ->preserveFilenames()
+                                //     ->reorderable()
+                                //     ->panelLayout('grid')
+                                //     ->helperText('يمكنك تحميل صور متعددة وإعادة ترتيبها.'),
                             ]),
                     ]),
             ]);

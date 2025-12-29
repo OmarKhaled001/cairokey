@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Car extends Model implements HasMedia
 {
-    use HasFactory, HasSlug, HasTags, InteractsWithMedia;
+    use HasFactory, HasSlug,  InteractsWithMedia;
 
     protected $fillable = [
         'name',
@@ -57,10 +57,5 @@ class Car extends Model implements HasMedia
     public function reviews()
     {
         return $this->morphMany(Review::class, 'reviewable');
-    }
-
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('images');
     }
 }

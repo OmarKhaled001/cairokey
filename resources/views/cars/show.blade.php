@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('name', $apartment->name . ' - كايرو كي')
+@section('name', $car->brand . ' ' . $car->name . ' - كايرو كي')
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -18,6 +18,22 @@
         .show-container {
             padding-top: 5rem;
             padding-bottom: 5rem;
+        }
+
+        /* تصميم الغلاف والصور */
+        .car-cover-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+
+        .car-cover-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* تصميم الميديا والسلايدر */
@@ -66,7 +82,8 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
-        .apartment-title {
+        .apartment-title,
+        .car-title {
             font-size: 2.5rem;
             font-weight: 800;
             color: var(--secondary-color);
@@ -254,11 +271,13 @@
                 grid-template-columns: 1fr;
             }
 
-            .apartment-gallery {
+            .apartment-gallery,
+            .car-cover-container {
                 height: 400px;
             }
 
-            .apartment-title {
+            .apartment-title,
+            .car-title {
                 font-size: 1.8rem;
             }
 
@@ -273,90 +292,53 @@
 @section('content')
     <div class="show-container container">
 
-        {{-- 1. السلايدر (يظهر فقط إذا وجد ميديا) --}}
-        @php
-            $videoId = null;
-            if ($apartment->video_url) {
-                preg_match(
-                    '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i',
-                    $apartment->video_url,
-                    $match,
-                );
-                $videoId = $match[1] ?? null;
-            }
-            $hasImages = $apartment->images && count($apartment->images) > 0;
-        @endphp
-
-        @if ($videoId || $hasImages || $apartment->cover)
-            <div class="apartment-gallery shadow-xl">
-                <div class="swiper mainSwiper">
-                    <div class="swiper-wrapper">
-                        {{-- فيديو يوتيوب --}}
-                        @if ($videoId)
-                            <div class="swiper-slide">
-                                <div class="video-container">
-                                    <iframe src="https://www.youtube.com/embed/{{ $videoId }}"
-                                        allowfullscreen></iframe>
-                                </div>
-                            </div>
-                        @endif
-
-                        @if ($hasImages)
-                            @foreach ($apartment->images as $image)
-                                <div class="swiper-slide">
-                                    <img src="{{ $image ? asset('storage/' . $image) : 'https://placehold.co/600x400?text=Apartment' }}"
-                                        alt="{{ $apartment->name }}">
-                                </div>
-                            @endforeach
-                        @else
-                            <div class="swiper-slide">
-                                <img src="{{ $apartment->cover ? asset('storage/' . $apartment->cover) : 'https://placehold.co/600x400?text=Apartment' }}"
-                                    alt="{{ $apartment->name }}">
-                            </div>
-                        @endif
-                    </div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-pagination"></div>
-                </div>
+        {{-- 1. صورة الغلاف فقط --}}
+        <div class="car-cover-container shadow-xl">
+            <img src="{{ $car->cover ? asset('storage/' . $car->cover) : 'https://placehold.co/1200x500?text=Car+Image' }}"
+                alt="{{ $car->name }}">
+            <div
+                style="position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(transparent, rgba(0,0,0,0.2));">
             </div>
-        @endif
+        </div>
 
         {{-- 2. الشبكة الرئيسية --}}
         <div class="details-grid">
 
-            {{-- المعلومات --}}
+            {{-- معلومات السيارة --}}
             <div class="info-card">
+
+                <h1 class="apartment-title"> {{ $car->name }}</h1>
                 <span class="badge"
-                    style="background: var(--primary-color); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; margin-bottom: 1rem; display: inline-block;">إقامة
-                    مميزة</span>
-                <h1 class="apartment-title">{{ $apartment->name }}</h1>
+                    style="background: var(--primary-color); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; margin-bottom: 1rem; display: inline-block;">
+                    {{ $car->brand }}
+                </span>
+                <span class="badge"
+                    style="background: var(--primary-color); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; margin-bottom: 1rem; display: inline-block;">
+                    {{ $car->model }}
+                </span>
                 <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 2rem;">
-                    <i class="fas fa-map-marker-alt text-primary ml-1"></i> {{ $apartment->city }}
+                    <i class="fas fa-calendar-alt text-primary ml-1"></i> موديل سنة {{ $car->year }}
                 </p>
 
                 <div class="description-section">
                     <h3 style="font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
                         <span
                             style="width: 4px; height: 24px; background: var(--primary-color); border-radius: 10px; display: inline-block;"></span>
-                        عن هذه الشقة
+                        حول هذه السيارة
                     </h3>
-                    <p style="line-height: 2; color: #475569; font-size: 1.1rem;">{{ $apartment->description }}</p>
+                    <p style="line-height: 2; color: #475569; font-size: 1.1rem;">{{ $car->description }}</p>
                 </div>
 
                 <div class="amenities-section" style="margin-top: 3.5rem;">
                     <h3 style="font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
                         <span
                             style="width: 4px; height: 24px; background: var(--primary-color); border-radius: 10px; display: inline-block;"></span>
-                        المرافق والخدمات
+                        المواصفات الأساسية
                     </h3>
                     <div class="tags-grid">
-                        <div class="tag-item">
-                            <i class="fas fa-bed"></i>
-                            <span>{{ $apartment->rooms }} غرف نوم</span>
-                        </div>
-                        @if ($apartment->tags)
-                            @foreach ($apartment->tags as $tag)
+
+                        @if ($car->tags)
+                            @foreach ($car->tags as $tag)
                                 <div class="tag-item">
                                     <i class="fas fa-check-circle"></i>
                                     <span>{{ $tag }}</span>
@@ -367,18 +349,17 @@
                 </div>
             </div>
 
-            {{-- الحجز --}}
             <div class="booking-card">
                 <div class="price-box shadow-lg">
                     <span class="unit">يبدأ من</span>
-                    <span class="amount">${{ $apartment->price_per_night }}</span>
-                    <span class="unit">لكل ليلة</span>
+                    <span class="amount">${{ $car->price_per_day }}</span>
+                    <span class="unit">لكل يوم</span>
                 </div>
 
                 <div style="margin-bottom: 1.5rem;">
                     <label style="font-weight: 700; color: #1e293b; display: block; margin-bottom: 0.75rem;">تاريخ
-                        الإقامة</label>
-                    <input type="text" id="checkIn" placeholder="اختر تاريخ الوصول والمغادرة">
+                        الحجز</label>
+                    <input type="text" id="checkIn" placeholder="اختر تاريخ الاستلام والتسليم">
                 </div>
 
                 <div class="error-message" id="errorMessage">
@@ -389,7 +370,7 @@
                 <div id="bookingSummary" style="display: none;">
                     <div class="summary-box">
                         <div class="d-flex justify-between" style="margin-bottom: 0.75rem; color: #64748b;">
-                            <span>إجمالي الليالي:</span>
+                            <span>إجمالي الايام:</span>
                             <span id="nightCount" style="color: #1e293b; font-weight: 700;">0</span>
                         </div>
                         <div class="d-flex justify-between"
@@ -410,74 +391,15 @@
             </div>
         </div>
     </div>
-
-    <div class="related-apartments container" style="margin-top: 5rem; border-top: 1px solid #e2e8f0; padding-top: 4rem;">
-        <div class="d-flex justify-between align-center" style="margin-bottom: 2rem;">
-            <div>
-                <h2 style="font-weight: 800; color: var(--secondary-color);">شقق قد تعجبك</h2>
-                <p style="color: #64748b;">استكشف المزيد من خيارات الإقامة المميزة في كايرو كي</p>
-            </div>
-            <div class="swiper-nav-wrapper d-flex gap-2">
-                <div class="swiper-button-prev-related custom-nav"><i class="fas fa-chevron-right"></i></div>
-                <div class="swiper-button-next-related custom-nav"><i class="fas fa-chevron-left"></i></div>
-            </div>
-        </div>
-
-        <div class="swiper relatedSwiper" style="padding: 10px 5px 40px;">
-            <div class="swiper-wrapper">
-                @foreach ($relatedApartments as $related)
-                    <div class="swiper-slide">
-                        <div class="apartment-card shadow-sm"
-                            style="background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #eee; transition: 0.3s;">
-                            <div style="height: 220px; overflow: hidden; position: relative;">
-                                <img src="{{ asset('storage/' . $related->cover) }}"
-                                    style="width: 100%; height: 100%; object-fit: cover;" alt="{{ $related->name }}">
-                                <div
-                                    style="position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 10px; font-weight: 700; color: var(--primary-color);">
-                                    ${{ $related->price_per_night }}
-                                </div>
-                            </div>
-                            <div style="padding: 1.5rem;">
-                                <h4 style="font-weight: 700; margin-bottom: 10px; color: var(--secondary-color);">
-                                    {{ $related->name }}</h4>
-                                <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">
-                                    <i class="fas fa-map-marker-alt ml-1"></i> {{ $related->city }}
-                                </p>
-                                <a href="{{ route('apartments.show', $related->slug) }}" class="btn-outline"
-                                    style="display: block; text-align: center; padding: 10px; border-radius: 12px; border: 1.5px solid var(--primary-color); color: var(--primary-color); font-weight: 700; transition: 0.3s;">
-                                    عرض التفاصيل
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
     <script>
-        // Swiper Config
-        new Swiper(".mainSwiper", {
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev"
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-                dynamicBullets: true
-            },
-            loop: true,
-        });
-
         // Booking Logic
-        const pricePerNight = {{ $apartment->price_per_night }};
-        const bookings = @json($apartment->bookings->map(fn($b) => ['from' => $b->start_date, 'to' => $b->end_date]));
+        const pricePerDay = {{ $car->price_per_day }};
+        const bookings = @json($car->bookings->map(fn($b) => ['from' => $b->start_date, 'to' => $b->end_date]));
 
         // دالة للتحقق من التداخل مع الحجوزات
         function checkDateOverlap(start, end) {
@@ -551,13 +473,13 @@
                         return;
                     }
 
-                    // حساب عدد الليالي
+                    // حساب عدد الأيام
                     const diffDays = Math.ceil(Math.abs(endDate - startDate) / (1000 * 60 * 60 * 24));
-                    const totalPrice = diffDays * pricePerNight;
+                    const totalPrice = diffDays * pricePerDay;
 
                     // إظهار الملخص
                     bookingSummary.style.display = 'block';
-                    document.getElementById('nightCount').innerText = `${diffDays} ليلة`;
+                    document.getElementById('nightCount').innerText = `${diffDays} يوم`;
                     document.getElementById('totalAmount').innerText = `${totalPrice} $`;
 
                     // تفعيل زر الواتساب
@@ -567,7 +489,7 @@
                     const start = startDate.toLocaleDateString('ar-EG');
                     const end = endDate.toLocaleDateString('ar-EG');
                     const msg =
-                        `مرحباً، أرغب بحجز: {{ $apartment->name }}\nالوصول: ${start}\nالمغادرة: ${end}\nالمدة: ${diffDays} ليالي\nالإجمالي: ${totalPrice} $`;
+                        `مرحباً، أرغب بحجز: {{ $car->name }}\nالوصول: ${start}\nالمغادرة: ${end}\nالمدة: ${diffDays} يوم\nالإجمالي: ${totalPrice} $`;
                     whatsappBtn.href = `https://wa.me/201068778340?text=${encodeURIComponent(msg)}`;
                 }
             },
@@ -577,28 +499,6 @@
                     dayElem.title = "هذا اليوم محجوز";
                 }
             }
-        });
-
-        // Swiper للشقق المشابهة
-        new Swiper(".relatedSwiper", {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            navigation: {
-                nextEl: ".swiper-button-next-related",
-                prevEl: ".swiper-button-prev-related",
-            },
-            breakpoints: {
-                640: {
-                    slidesPerView: 2
-                },
-                1024: {
-                    slidesPerView: 3
-                },
-                1280: {
-                    slidesPerView: 4
-                },
-            },
-            loop: true,
         });
     </script>
 @endpush

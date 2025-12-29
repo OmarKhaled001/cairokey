@@ -112,7 +112,7 @@ class BookingsTable
                     ->action(function ($record, array $data) {
                         $record->update(['status' => $data['new_status']]);
                         $newStatusLabel = BookingStatus::tryFrom($data['new_status'])->getLabel() ?? 'مجهولة';
-
+                        $record->update(['status' => $newStatusLabel]);
                         Notification::make()
                             ->title('تم تحديث حالة الحجز')
                             ->body("تم تغيير حالة الحجز بنجاح إلى {$newStatusLabel}")

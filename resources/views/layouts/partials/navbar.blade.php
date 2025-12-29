@@ -28,10 +28,10 @@
             <a href="{{ route('apartments.index') }}" class="nav-link {{ request()->is('apartments') ? 'active' : '' }}">
                 شقق
             </a>
-            <a href="#" class="nav-link {{ request()->is('blog') ? 'active' : '' }}">
+            <a href="{{ route('hotels.index') }}" class="nav-link {{ request()->is('hotels') ? 'active' : '' }}">
                 فنادق
             </a>
-            <a href="#" class="nav-link {{ request()->is('blog') ? 'active' : '' }}">
+            <a href="{{ route('cars.index') }}" class="nav-link {{ request()->is('cars') ? 'active' : '' }}">
                 سيارات
             </a>
             <a href="#" class="nav-link {{ request()->is('blog') ? 'active' : '' }}">

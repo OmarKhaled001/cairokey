@@ -7,7 +7,9 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Tabs\Tab;
 use Mokhosh\FilamentRating\Components\Rating;
@@ -48,10 +50,9 @@ class HotelForm
                                             ->label('الوصف التفصيلي')
                                             ->rows(5),
 
-                                        SpatieTagsInput::make('tags')
-                                            ->label('الخدمات والمميزات (Tags)')
+                                        TagsInput::make('tags')
+                                            ->label('الخدمات والمميزات')
                                             ->columnSpanFull()
-                                            ->type('hotel_amenities')
                                             ->placeholder('أضف مميزات مثل (مسبح، خدمة غرف، إفطار مجاني)'),
                                     ]),
                                 Fieldset::make('الموقع الجغرافي')
@@ -66,7 +67,7 @@ class HotelForm
                                             ->label('العنوان التفصيلي'),
 
                                         TextInput::make('location')
-                                            ->suffixIcon(Heroicon::OutlinedVideoCamera)
+                                            ->suffixIcon(Heroicon::OutlinedMap)
                                             ->label('الموقع (رابط الخريطة)'),
                                     ]),
 
@@ -96,26 +97,13 @@ class HotelForm
                         Tab::make('الوسائط')
                             ->icon('heroicon-o-photo')
                             ->schema([
-                                SpatieMediaLibraryFileUpload::make('cover')
-                                    ->collection('cover')
-                                    ->directory('hotels/cover')
+                                FileUpload::make('cover')
+                                    ->disk('public')
+                                    ->visibility('public')
+                                    ->directory('hotels/covers')
                                     ->label('الغلاف')
                                     ->image()
-                                    ->columnSpanFull()
-                                    ->preserveFilenames(),
-
-                                SpatieMediaLibraryFileUpload::make('images')
-                                    ->collection('images')
-                                    ->directory('hotels/images')
-                                    ->label('الصور')
-                                    ->multiple()
-                                    ->image()
-                                    ->columnSpanFull()
-                                    ->preserveFilenames()
-                                    ->reorderable()
-                                    ->panelLayout('grid')
-                                    ->helperText('يمكنك تحميل صور متعددة وإعادة ترتيبها.'),
-
+                                    ->columnSpanFull(),
                             ]),
                     ]),
             ]);

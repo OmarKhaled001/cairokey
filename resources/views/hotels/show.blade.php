@@ -1,10 +1,9 @@
 @extends('layouts.master')
 
-@section('name', $apartment->name . ' - كايرو كي')
+@section('name', $hotel->name . ' - كايرو كي')
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <style>
         :root {
             --accent-bg: #f8fafc;
@@ -20,38 +19,22 @@
             padding-bottom: 5rem;
         }
 
-        /* تصميم الميديا والسلايدر */
-        .apartment-gallery {
-            background: #000;
+        /* تصميم الغلاف */
+        .hotel-cover-container {
+            position: relative;
+            width: 100% height: 500px;
             border-radius: var(--radius-lg);
             overflow: hidden;
-            height: 500px;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
 
-        .swiper {
-            width: 100%;
-            height: 100%;
-        }
-
-        .swiper-slide img {
+        .hotel-cover-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .video-container {
-            width: 100%;
-            height: 100%;
-        }
-
-        .video-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* تفاصيل الشقة */
+        /* تفاصيل الفندق */
         .details-grid {
             display: grid;
             grid-template-columns: 1.7fr 1fr;
@@ -66,12 +49,37 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
-        .apartment-title {
+        .hotel-title {
             font-size: 2.5rem;
             font-weight: 800;
             color: var(--secondary-color);
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             letter-spacing: -0.025em;
+        }
+
+        /* Rating Section */
+        .rating-section {
+            background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.1), rgba(var(--primary-rgb), 0.05));
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(var(--primary-rgb), 0.2);
+        }
+
+        .rating-section .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .rating-section .trust-text {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         /* المميزات Tags */
@@ -181,42 +189,6 @@
             border: 1px dashed #cbd5e1;
         }
 
-        .custom-nav {
-            width: 45px;
-            height: 45px;
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.3s;
-            color: var(--secondary-color);
-        }
-
-        .custom-nav:hover {
-            background: var(--primary-color);
-            color: #fff;
-            border-color: var(--primary-color);
-        }
-
-        .apartment-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
-        }
-
-        .relatedSwiper .swiper-slide {
-            height: auto;
-        }
-
-        /* تنسيق التواريخ المحجوزة في Flatpickr */
-        .flatpickr-day.disabled {
-            color: #cbd5e1 !important;
-            cursor: not-allowed !important;
-            background: #f1f5f9 !important;
-        }
-
         .error-message {
             background: #fee;
             color: #c33;
@@ -254,11 +226,11 @@
                 grid-template-columns: 1fr;
             }
 
-            .apartment-gallery {
+            .hotel-cover-container {
                 height: 400px;
             }
 
-            .apartment-title {
+            .hotel-title {
                 font-size: 1.8rem;
             }
 
@@ -273,105 +245,70 @@
 @section('content')
     <div class="show-container container">
 
-        {{-- 1. السلايدر (يظهر فقط إذا وجد ميديا) --}}
-        @php
-            $videoId = null;
-            if ($apartment->video_url) {
-                preg_match(
-                    '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i',
-                    $apartment->video_url,
-                    $match,
-                );
-                $videoId = $match[1] ?? null;
-            }
-            $hasImages = $apartment->images && count($apartment->images) > 0;
-        @endphp
-
-        @if ($videoId || $hasImages || $apartment->cover)
-            <div class="apartment-gallery shadow-xl">
-                <div class="swiper mainSwiper">
-                    <div class="swiper-wrapper">
-                        {{-- فيديو يوتيوب --}}
-                        @if ($videoId)
-                            <div class="swiper-slide">
-                                <div class="video-container">
-                                    <iframe src="https://www.youtube.com/embed/{{ $videoId }}"
-                                        allowfullscreen></iframe>
-                                </div>
-                            </div>
-                        @endif
-
-                        @if ($hasImages)
-                            @foreach ($apartment->images as $image)
-                                <div class="swiper-slide">
-                                    <img src="{{ $image ? asset('storage/' . $image) : 'https://placehold.co/600x400?text=Apartment' }}"
-                                        alt="{{ $apartment->name }}">
-                                </div>
-                            @endforeach
-                        @else
-                            <div class="swiper-slide">
-                                <img src="{{ $apartment->cover ? asset('storage/' . $apartment->cover) : 'https://placehold.co/600x400?text=Apartment' }}"
-                                    alt="{{ $apartment->name }}">
-                            </div>
-                        @endif
-                    </div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-pagination"></div>
-                </div>
+        {{-- 1. صورة الغلاف --}}
+        <div class="hotel-cover-container shadow-xl">
+            <img src="{{ $hotel->cover ? asset('storage/' . $hotel->cover) : 'https://placehold.co/1200x500?text=Hotel+Image' }}"
+                alt="{{ $hotel->name }}">
+            <div
+                style="position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(transparent, rgba(0,0,0,0.2));">
             </div>
-        @endif
+        </div>
 
         {{-- 2. الشبكة الرئيسية --}}
         <div class="details-grid">
 
-            {{-- المعلومات --}}
+            {{-- معلومات الفندق --}}
             <div class="info-card">
-                <span class="badge"
-                    style="background: var(--primary-color); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; margin-bottom: 1rem; display: inline-block;">إقامة
-                    مميزة</span>
-                <h1 class="apartment-title">{{ $apartment->name }}</h1>
+
+                <h1 class="hotel-title">{{ $hotel->name }}</h1>
+
+                {{-- Rating Section --}}
+                <div class="rating-section">
+                    <div class="rating-display">
+                        <x-star-rating :rating="$hotel->average_rating" :reviewsCount="0" :showCount="false" size="lg" />
+                    </div>
+                    <div class="trust-text">
+                        <i class="fas fa-star"></i>
+                        <span>تصنيف الفندق</span>
+                    </div>
+                </div>
+
                 <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 2rem;">
-                    <i class="fas fa-map-marker-alt text-primary ml-1"></i> {{ $apartment->city }}
+                    <i class="fas fa-map-marker-alt text-primary ml-1"></i> {{ $hotel->city }}, {{ $hotel->governorate }}
                 </p>
 
                 <div class="description-section">
                     <h3 style="font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
                         <span
                             style="width: 4px; height: 24px; background: var(--primary-color); border-radius: 10px; display: inline-block;"></span>
-                        عن هذه الشقة
+                        حول هذا الفندق
                     </h3>
-                    <p style="line-height: 2; color: #475569; font-size: 1.1rem;">{{ $apartment->description }}</p>
+                    <p style="line-height: 2; color: #475569; font-size: 1.1rem;">{{ $hotel->description }}</p>
                 </div>
 
-                <div class="amenities-section" style="margin-top: 3.5rem;">
-                    <h3 style="font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
-                        <span
-                            style="width: 4px; height: 24px; background: var(--primary-color); border-radius: 10px; display: inline-block;"></span>
-                        المرافق والخدمات
-                    </h3>
-                    <div class="tags-grid">
-                        <div class="tag-item">
-                            <i class="fas fa-bed"></i>
-                            <span>{{ $apartment->rooms }} غرف نوم</span>
-                        </div>
-                        @if ($apartment->tags)
-                            @foreach ($apartment->tags as $tag)
+                @if ($hotel->tags && count($hotel->tags) > 0)
+                    <div class="amenities-section" style="margin-top: 3.5rem;">
+                        <h3 style="font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                            <span
+                                style="width: 4px; height: 24px; background: var(--primary-color); border-radius: 10px; display: inline-block;"></span>
+                            المرافق والخدمات
+                        </h3>
+                        <div class="tags-grid">
+                            @foreach ($hotel->tags as $tag)
                                 <div class="tag-item">
                                     <i class="fas fa-check-circle"></i>
                                     <span>{{ $tag }}</span>
                                 </div>
                             @endforeach
-                        @endif
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
 
-            {{-- الحجز --}}
             <div class="booking-card">
                 <div class="price-box shadow-lg">
                     <span class="unit">يبدأ من</span>
-                    <span class="amount">${{ $apartment->price_per_night }}</span>
+                    <span class="amount">${{ $hotel->price_per_night }}</span>
                     <span class="unit">لكل ليلة</span>
                 </div>
 
@@ -389,7 +326,7 @@
                 <div id="bookingSummary" style="display: none;">
                     <div class="summary-box">
                         <div class="d-flex justify-between" style="margin-bottom: 0.75rem; color: #64748b;">
-                            <span>إجمالي الليالي:</span>
+                            <span>عدد الليالي:</span>
                             <span id="nightCount" style="color: #1e293b; font-weight: 700;">0</span>
                         </div>
                         <div class="d-flex justify-between"
@@ -410,74 +347,15 @@
             </div>
         </div>
     </div>
-
-    <div class="related-apartments container" style="margin-top: 5rem; border-top: 1px solid #e2e8f0; padding-top: 4rem;">
-        <div class="d-flex justify-between align-center" style="margin-bottom: 2rem;">
-            <div>
-                <h2 style="font-weight: 800; color: var(--secondary-color);">شقق قد تعجبك</h2>
-                <p style="color: #64748b;">استكشف المزيد من خيارات الإقامة المميزة في كايرو كي</p>
-            </div>
-            <div class="swiper-nav-wrapper d-flex gap-2">
-                <div class="swiper-button-prev-related custom-nav"><i class="fas fa-chevron-right"></i></div>
-                <div class="swiper-button-next-related custom-nav"><i class="fas fa-chevron-left"></i></div>
-            </div>
-        </div>
-
-        <div class="swiper relatedSwiper" style="padding: 10px 5px 40px;">
-            <div class="swiper-wrapper">
-                @foreach ($relatedApartments as $related)
-                    <div class="swiper-slide">
-                        <div class="apartment-card shadow-sm"
-                            style="background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #eee; transition: 0.3s;">
-                            <div style="height: 220px; overflow: hidden; position: relative;">
-                                <img src="{{ asset('storage/' . $related->cover) }}"
-                                    style="width: 100%; height: 100%; object-fit: cover;" alt="{{ $related->name }}">
-                                <div
-                                    style="position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 10px; font-weight: 700; color: var(--primary-color);">
-                                    ${{ $related->price_per_night }}
-                                </div>
-                            </div>
-                            <div style="padding: 1.5rem;">
-                                <h4 style="font-weight: 700; margin-bottom: 10px; color: var(--secondary-color);">
-                                    {{ $related->name }}</h4>
-                                <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">
-                                    <i class="fas fa-map-marker-alt ml-1"></i> {{ $related->city }}
-                                </p>
-                                <a href="{{ route('apartments.show', $related->slug) }}" class="btn-outline"
-                                    style="display: block; text-align: center; padding: 10px; border-radius: 12px; border: 1.5px solid var(--primary-color); color: var(--primary-color); font-weight: 700; transition: 0.3s;">
-                                    عرض التفاصيل
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
     <script>
-        // Swiper Config
-        new Swiper(".mainSwiper", {
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev"
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-                dynamicBullets: true
-            },
-            loop: true,
-        });
-
         // Booking Logic
-        const pricePerNight = {{ $apartment->price_per_night }};
-        const bookings = @json($apartment->bookings->map(fn($b) => ['from' => $b->start_date, 'to' => $b->end_date]));
+        const pricePerNight = {{ $hotel->price_per_night }};
+        const bookings = @json($hotel->bookings->map(fn($b) => ['from' => $b->start_date, 'to' => $b->end_date]));
 
         // دالة للتحقق من التداخل مع الحجوزات
         function checkDateOverlap(start, end) {
@@ -501,8 +379,6 @@
 
         // دالة لتعطيل التواريخ المحجوزة
         function disableBookedDates(date) {
-            const dateStr = date.toISOString().split('T')[0];
-
             for (let booking of bookings) {
                 const start = new Date(booking.from);
                 const end = new Date(booking.to);
@@ -521,7 +397,7 @@
             mode: "range",
             minDate: "today",
             dateFormat: "Y-m-d",
-            disable: [disableBookedDates], // تعطيل التواريخ المحجوزة
+            disable: [disableBookedDates],
             onChange: function(dates, dateStr, instance) {
                 const errorMsg = document.getElementById('errorMessage');
                 const errorText = document.getElementById('errorText');
@@ -552,12 +428,12 @@
                     }
 
                     // حساب عدد الليالي
-                    const diffDays = Math.ceil(Math.abs(endDate - startDate) / (1000 * 60 * 60 * 24));
-                    const totalPrice = diffDays * pricePerNight;
+                    const diffNights = Math.ceil(Math.abs(endDate - startDate) / (1000 * 60 * 60 * 24));
+                    const totalPrice = diffNights * pricePerNight;
 
                     // إظهار الملخص
                     bookingSummary.style.display = 'block';
-                    document.getElementById('nightCount').innerText = `${diffDays} ليلة`;
+                    document.getElementById('nightCount').innerText = `${diffNights} ليلة`;
                     document.getElementById('totalAmount').innerText = `${totalPrice} $`;
 
                     // تفعيل زر الواتساب
@@ -567,7 +443,7 @@
                     const start = startDate.toLocaleDateString('ar-EG');
                     const end = endDate.toLocaleDateString('ar-EG');
                     const msg =
-                        `مرحباً، أرغب بحجز: {{ $apartment->name }}\nالوصول: ${start}\nالمغادرة: ${end}\nالمدة: ${diffDays} ليالي\nالإجمالي: ${totalPrice} $`;
+                        `مرحباً، أرغب بحجز: {{ $hotel->name }}\nالوصول: ${start}\nالمغادرة: ${end}\nعدد الليالي: ${diffNights}\nالإجمالي: ${totalPrice} $`;
                     whatsappBtn.href = `https://wa.me/201068778340?text=${encodeURIComponent(msg)}`;
                 }
             },
@@ -577,28 +453,6 @@
                     dayElem.title = "هذا اليوم محجوز";
                 }
             }
-        });
-
-        // Swiper للشقق المشابهة
-        new Swiper(".relatedSwiper", {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            navigation: {
-                nextEl: ".swiper-button-next-related",
-                prevEl: ".swiper-button-prev-related",
-            },
-            breakpoints: {
-                640: {
-                    slidesPerView: 2
-                },
-                1024: {
-                    slidesPerView: 3
-                },
-                1280: {
-                    slidesPerView: 4
-                },
-            },
-            loop: true,
         });
     </script>
 @endpush

@@ -14,6 +14,8 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 
 class BookingForm
 {
@@ -30,39 +32,52 @@ class BookingForm
     {
         return $schema->components([
 
+            Select::make('bookable_type')
+                ->label('نوع الحجز')
+                ->required()
+                ->options(self::$bookableModels)
+                ->live()
+                ->afterStateUpdated(fn(Set $set) => $set('bookable_id', null)),
+
+            Select::make('bookable_id')
+                ->label('الكيان المرتبط')
+                ->required()
+                ->options(fn(Get $get) => self::getBookableOptions($get('bookable_type')))
+                ->searchable()
+                ->live()
+                ->afterStateUpdated(fn($state, Set $set, Get $get) => self::updateTotalPrice($get, $set)),
+
             DatePicker::make('start_date')
                 ->label('التاريخ من')
                 ->required()
                 ->live()
-                ->afterStateUpdated(fn($state, $set, $get) => self::updateTotalPrice($get, $set)),
+                ->disabledDates(fn(Get $get) => self::getReservedDates($get))
+                ->afterStateUpdated(fn($state, Set $set, Get $get) => self::updateTotalPrice($get, $set)),
 
             DatePicker::make('end_date')
                 ->label('التاريخ إلى')
                 ->required()
                 ->live()
                 ->afterOrEqual('start_date')
-                ->afterStateUpdated(fn($state, $set, $get) => self::updateTotalPrice($get, $set)),
-
-            Select::make('bookable_type')
-                ->label('نوع الحجز')
-                ->required()
-                ->options(self::$bookableModels)
-                ->live()
-                ->afterStateUpdated(fn($set) => $set('bookable_id', null)),
-
-            Select::make('bookable_id')
-                ->label('الكيان المرتبط')
-                ->required()
-                ->options(fn($get) => self::getBookableOptions($get('bookable_type')))
-                ->searchable()
-                ->live()
-                ->afterStateUpdated(fn($state, $set, $get) => self::updateTotalPrice($get, $set)),
+                ->disabledDates(fn(Get $get) => self::getReservedDates($get))
+                ->afterStateUpdated(fn($state, Set $set, Get $get) => self::updateTotalPrice($get, $set)),
 
             Select::make('client_id')
                 ->label('العميل')
-                ->options(Client::query()->pluck('name', 'id'))
+                ->relationship(name: 'client', titleAttribute: 'name')
                 ->searchable()
-                ->nullable(),
+                ->createOptionForm([
+                    TextInput::make('name')
+                        ->label('الاسم')
+                        ->required(),
+                    TextInput::make('email')
+                        ->label('البريد الالكتروني')
+                        ->required()
+                        ->email(),
+                    TextInput::make('phone')
+                        ->label('الهاتف')
+                        ->required(),
+                ]),
 
             TextInput::make('total_price')
                 ->label('السعر الإجمالي')
@@ -90,9 +105,7 @@ class BookingForm
             ->toArray();
     }
 
-    /**
-     * حساب السعر النهائي
-     */
+
     protected static function updateTotalPrice(callable $get, callable $set): void
     {
         $start = $get('start_date');
@@ -153,5 +166,30 @@ class BookingForm
         $totalPrice = $duration * $price;
 
         $set('total_price', max($totalPrice, 0));
+    }
+    protected static function getReservedDates(Get $get): array
+    {
+        $type = $get('bookable_type');
+        $id = $get('bookable_id');
+
+        if (!$type || !$id) return [];
+
+        $model = $type::find($id);
+
+        if (!$model || !method_exists($model, 'bookings')) return [];
+
+        $reservedDates = [];
+        $bookings = $model->bookings()
+            ->whereIn('status', [BookingStatus::Confirmed, BookingStatus::Pending])
+            ->get(['start_date', 'end_date']);
+
+        foreach ($bookings as $booking) {
+            $period = \Carbon\CarbonPeriod::create($booking->start_date, $booking->end_date);
+            foreach ($period as $date) {
+                $reservedDates[] = $date->format('Y-m-d');
+            }
+        }
+
+        return $reservedDates;
     }
 }
