@@ -22,6 +22,7 @@ return new class extends Migration
 
             $table->string('cover')->nullable();
             $table->json('images')->nullable();
+            $table->json('tags')->nullable();
 
             $table->decimal('price_per_day', 10, 2);
 

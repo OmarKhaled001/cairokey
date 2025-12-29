@@ -28,6 +28,7 @@ class Hotel extends Model implements HasMedia
         'featured',
         'cover',
         'images',
+        'tags',
     ];
 
     protected $casts = [
@@ -35,7 +36,8 @@ class Hotel extends Model implements HasMedia
         'featured' => 'boolean',
         'price_per_night' => 'decimal:2',
         'rating' => 'integer',
-        'images' => 'json',
+        'images' => 'array',
+        'tags' => 'array',
     ];
 
     public function getSlugOptions(): SlugOptions

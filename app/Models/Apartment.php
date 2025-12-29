@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Apartment extends Model implements HasMedia
 {
-    use HasFactory, HasSlug, HasTags, InteractsWithMedia;
+    use HasFactory, HasSlug, InteractsWithMedia;
 
     protected $fillable = [
         'name',
@@ -30,6 +30,7 @@ class Apartment extends Model implements HasMedia
         'rating',
         'active',
         'featured',
+        'tags',
     ];
 
     protected $casts = [
@@ -39,6 +40,7 @@ class Apartment extends Model implements HasMedia
         'rating' => 'integer',
         'rooms' => 'integer',
         'images' => 'array',
+        'tags' => 'array',
     ];
 
     public function getSlugOptions(): SlugOptions

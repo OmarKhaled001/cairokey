@@ -25,6 +25,7 @@ class Service extends Model implements HasMedia
         'featured',
         'cover',
         'images',
+        'tags',
     ];
 
     protected $casts = [
@@ -32,7 +33,8 @@ class Service extends Model implements HasMedia
         'featured' => 'boolean',
         'price' => 'decimal:2',
         'rating' => 'integer',
-        'images' => 'json',
+        'images' => 'array',
+        'tags' => 'array',
     ];
 
     public function getSlugOptions(): SlugOptions

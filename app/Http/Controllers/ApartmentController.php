@@ -11,13 +11,18 @@ class ApartmentController extends Controller
     {
         $query = Apartment::where('active', true);
 
-        // Filters
+        // جلب أقل وأعلى سعر موجودين فعلياً في قاعدة البيانات
+        $minAvailablePrice = Apartment::where('active', true)->min('price_per_night') ?? 0;
+        $maxAvailablePrice = Apartment::where('active', true)->max('price_per_night') ?? 5000;
+
+        // تطبيق الفلتر
         if ($request->filled('price_min')) {
             $query->where('price_per_night', '>=', $request->price_min);
         }
         if ($request->filled('price_max')) {
             $query->where('price_per_night', '<=', $request->price_max);
         }
+
         if ($request->filled('governorate')) {
             $query->where('governorate', $request->governorate);
         }
@@ -37,12 +42,21 @@ class ApartmentController extends Controller
                 break;
         }
 
-        $apartments = $query->paginate(12)->withQueryString();
+        $apartments = $query->with(['bookings' => function ($q) {
+            $q->whereIn('status', ['confirmed', 'pending']);
+        }])->paginate(1)->withQueryString();
 
+        $apartments = $query->paginate(12)->withQueryString();
         $governorates = Apartment::where('active', true)->distinct()->pluck('governorate');
         $cities = Apartment::where('active', true)->distinct()->pluck('city');
 
-        return view('apartments.index', compact('apartments', 'governorates', 'cities'));
+        return view('apartments.index', compact(
+            'apartments',
+            'governorates',
+            'cities',
+            'minAvailablePrice',
+            'maxAvailablePrice'
+        ));
     }
 
     public function show(Apartment $apartment)
@@ -51,6 +65,11 @@ class ApartmentController extends Controller
             abort(404);
         }
 
-        return view('apartments.show', compact('apartment'));
+        $relatedApartments = Apartment::where('active', true)
+            ->where('id', '!=', $apartment->id)
+            ->limit(8)
+            ->get();
+
+        return view('apartments.show', compact('apartment', 'relatedApartments'));
     }
 }

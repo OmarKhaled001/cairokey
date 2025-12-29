@@ -20,6 +20,7 @@ return new class extends Migration
 
             $table->string('cover')->nullable();
             $table->json('images')->nullable();
+            $table->json('tags')->nullable();
 
             $table->string('governorate')->nullable();
             $table->string('city')->nullable();

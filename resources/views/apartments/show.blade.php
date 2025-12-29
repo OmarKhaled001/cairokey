@@ -2,87 +2,470 @@
 
 @section('name', $apartment->name . ' - كايرو كي')
 
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        :root {
+            --accent-bg: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        body {
+            background-color: var(--accent-bg);
+        }
+
+        .show-container {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+        }
+
+        /* تصميم الميديا والسلايدر */
+        .apartment-gallery {
+            background: #000;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            height: 500px;
+            margin-bottom: 2rem;
+        }
+
+        .swiper {
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* تفاصيل الشقة */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1.7fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .info-card {
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .apartment-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+        }
+
+        /* المميزات Tags */
+        .tags-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.25rem;
+            margin-top: 2rem;
+        }
+
+        .tag-item {
+            background: var(--accent-bg);
+            padding: 1rem;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .tag-item:hover {
+            transform: translateY(-3px);
+            background: #fff;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .tag-item i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        /* بطاقة الحجز الجانبية */
+        .booking-card {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 110px;
+            border: 1px solid var(--border-color);
+        }
+
+        .price-box {
+            background: var(--secondary-color);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .price-box .amount {
+            font-size: 2.2rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        .price-box .unit {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .flatpickr-input {
+            width: 85% !important;
+            height: 55px;
+            padding: 0 1.5rem !important;
+            border-radius: 12px !important;
+            border: 2px solid #edf2f7 !important;
+            font-weight: 600 !important;
+            background: #fdfdfd !important;
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+            padding: 1.25rem;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            transition: 0.3s;
+        }
+
+        .whatsapp-btn:hover {
+            background: #1da851;
+            transform: scale(1.02);
+            color: #fff;
+        }
+
+        .summary-box {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 16px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .custom-nav {
+            width: 45px;
+            height: 45px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--secondary-color);
+        }
+
+        .custom-nav:hover {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        .apartment-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .relatedSwiper .swiper-slide {
+            height: auto;
+            /* لضمان تساوي الارتفاعات */
+        }
+
+        @media (max-width: 992px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .apartment-gallery {
+                height: 400px;
+            }
+
+            .apartment-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+@endpush
+
 @section('content')
+    <div class="show-container container">
 
-    <!-- Header Image -->
-    <section
-        style="
-    height: 60vh;
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ $apartment->main_image_url }}');
-    background-size: cover;
-    background-position: center;">
-    </section>
+        {{-- 1. السلايدر (يظهر فقط إذا وجد ميديا) --}}
+        @php
+            $videoId = null;
+            if ($apartment->video_url) {
+                preg_match(
+                    '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i',
+                    $apartment->video_url,
+                    $match,
+                );
+                $videoId = $match[1] ?? null;
+            }
+            $hasImages = $apartment->images && count($apartment->images) > 0;
+        @endphp
 
-    <section class="section-padding">
-        <div class="container">
+        @if ($videoId || $hasImages || $apartment->cover)
+            <div class="apartment-gallery shadow-xl">
+                <div class="swiper mainSwiper">
+                    <div class="swiper-wrapper">
+                        {{-- فيديو يوتيوب --}}
+                        @if ($videoId)
+                            <div class="swiper-slide">
+                                <div class="video-container">
+                                    <iframe src="https://www.youtube.com/embed/{{ $videoId }}"
+                                        allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        @endif
 
-            <div class="grid grid-cols-3 gap-4">
-
-                <!-- Apartment Details -->
-                <div class="col-span-2" style="padding: 1rem;">
-
-                    <h1 style="font-size: 2rem; margin-bottom: 10px;">{{ $apartment->name }}</h1>
-
-                    <p style="color: var(--text-light); margin-bottom: 1rem;">
-                        <i class="fas fa-map-marker-alt"></i>
-                        {{ $apartment->location }}
-                    </p>
-
-                    <div class="grid grid-cols-3 gap-4" style="margin-bottom: 2rem;">
-                        <div class="card" style="padding: 1rem; text-align:center;">
-                            <i class="fas fa-bed" style="font-size: 2rem; color: var(--primary-color);"></i>
-                            <p>{{ $apartment->rooms }} غرف</p>
-                        </div>
-                        <div class="card" style="padding: 1rem; text-align:center;">
-                            <i class="fas fa-couch" style="font-size: 2rem; color: var(--primary-color);"></i>
-                            <p>{{ $apartment->beds }} سرائر</p>
-                        </div>
-                        <div class="card" style="padding: 1rem; text-align:center;">
-                            <i class="fas fa-ruler-combined" style="font-size: 2rem; color: var(--primary-color);"></i>
-                            <p>{{ $apartment->size }} م²</p>
-                        </div>
+                        @if ($hasImages)
+                            @foreach ($apartment->images as $image)
+                                <div class="swiper-slide">
+                                    <img src="{{ $image ? asset('storage/' . $image) : 'https://placehold.co/600x400?text=Apartment' }}"
+                                        alt="{{ $apartment->name }}">
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="swiper-slide">
+                                <img src="{{ $apartment->cover ? asset('storage/' . $apartment->cover) : 'https://placehold.co/600x400?text=Apartment' }}"
+                                    alt="{{ $apartment->name }}">
+                            </div>
+                        @endif
                     </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+        @endif
 
-                    <h3 style="margin-bottom: 1rem;">الوصف</h3>
-                    <p style="line-height: 1.8; color: var(--text-light);">
-                        {{ $apartment->description }}
-                    </p>
+        {{-- 2. الشبكة الرئيسية --}}
+        <div class="details-grid">
 
+            {{-- المعلومات --}}
+            <div class="info-card">
+                <span class="badge"
+                    style="background: var(--primary-color); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; margin-bottom: 1rem; display: inline-block;">إقامة
+                    مميزة</span>
+                <h1 class="apartment-title">{{ $apartment->name }}</h1>
+                <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 2rem;">
+                    <i class="fas fa-map-marker-alt text-primary ml-1"></i> {{ $apartment->city }}
+                </p>
+
+                <div class="description-section">
+                    <h3 style="font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                        <span
+                            style="width: 4px; height: 24px; background: var(--primary-color); border-radius: 10px; display: inline-block;"></span>
+                        عن هذه الشقة
+                    </h3>
+                    <p style="line-height: 2; color: #475569; font-size: 1.1rem;">{{ $apartment->description }}</p>
                 </div>
 
-                <!-- Booking & Price -->
-                <div>
-                    <div
-                        style="background: var(--bg-light); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--card-shadow);">
-
-                        <h3 style="margin-bottom: 1rem;">السعر</h3>
-
-                        <p style="font-size: 1.5rem; color: var(--primary-color); font-weight:bold;">
-                            ${{ $apartment->price }} / ليلة
-                        </p>
-
-                        <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
-                            اطلب الحجز الآن
-                        </button>
-
+                <div class="amenities-section" style="margin-top: 3.5rem;">
+                    <h3 style="font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                        <span
+                            style="width: 4px; height: 24px; background: var(--primary-color); border-radius: 10px; display: inline-block;"></span>
+                        المرافق والخدمات
+                    </h3>
+                    <div class="tags-grid">
+                        <div class="tag-item">
+                            <i class="fas fa-bed"></i>
+                            <span>{{ $apartment->rooms }} غرف نوم</span>
+                        </div>
+                        @if ($apartment->tags)
+                            @foreach ($apartment->tags as $tag)
+                                <div class="tag-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>{{ $tag }}</span>
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
-
             </div>
 
-            <!-- Gallery -->
-            @if ($apartment->gallery && count($apartment->gallery))
-                <h3 style="margin-top: 3rem; margin-bottom: 1rem;">معرض الصور</h3>
-
-                <div class="grid grid-cols-3 gap-4">
-                    @foreach ($apartment->gallery as $img)
-                        <img src="{{ $img }}"
-                            style="width:100%; height:220px; object-fit:cover; border-radius: var(--radius-md);">
-                    @endforeach
+            {{-- الحجز --}}
+            <div class="booking-card">
+                <div class="price-box shadow-lg">
+                    <span class="unit">يبدأ من</span>
+                    <span class="amount">${{ $apartment->price_per_night }}</span>
+                    <span class="unit">لكل ليلة</span>
                 </div>
-            @endif
 
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="font-weight: 700; color: #1e293b; display: block; margin-bottom: 0.75rem;">تاريخ
+                        الإقامة</label>
+                    <input type="text" id="checkIn" placeholder="اختر تاريخ الوصول والمغادرة">
+                </div>
+
+                <div id="bookingSummary" style="display: none;">
+                    <div class="summary-box">
+                        <div class="d-flex justify-between" style="margin-bottom: 0.75rem; color: #64748b;">
+                            <span>إجمالي الليالي:</span>
+                            <span id="nightCount" style="color: #1e293b; font-weight: 700;">0</span>
+                        </div>
+                        <div class="d-flex justify-between"
+                            style="font-size: 1.25rem; font-weight: 800; border-top: 1px solid #e2e8f0; pt-3;">
+                            <span>الإجمالي:</span>
+                            <span id="totalAmount" style="color: var(--primary-color);">0 $</span>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" id="whatsappBook" class="whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i>
+                    تأكيد الحجز الآن
+                </a>
+                <p style="text-align: center; color: #94a3b8; font-size: 0.85rem; margin-top: 1.25rem;">
+                    <i class="fas fa-info-circle ml-1"></i> لن يتم خصم مبالغ حالياً، سيتم التواصل معك
+                </p>
+            </div>
         </div>
-    </section>
+    </div>
+    <div class="related-apartments container" style="margin-top: 5rem; border-top: 1px solid #e2e8f0; padding-top: 4rem;">
+        <div class="d-flex justify-between align-center" style="margin-bottom: 2rem;">
+            <div>
+                <h2 style="font-weight: 800; color: var(--secondary-color);">شقق قد تعجبك</h2>
+                <p style="color: #64748b;">استكشف المزيد من خيارات الإقامة المميزة في كايرو كي</p>
+            </div>
+            <div class="swiper-nav-wrapper d-flex gap-2">
+                <div class="swiper-button-prev-related custom-nav"><i class="fas fa-chevron-right"></i></div>
+                <div class="swiper-button-next-related custom-nav"><i class="fas fa-chevron-left"></i></div>
+            </div>
+        </div>
 
+        <div class="swiper relatedSwiper" style="padding: 10px 5px 40px;">
+            <div class="swiper-wrapper">
+                @foreach ($relatedApartments as $related)
+                    <div class="swiper-slide">
+                        <div class="apartment-card shadow-sm"
+                            style="background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #eee; transition: 0.3s;">
+                            <div style="height: 220px; overflow: hidden; position: relative;">
+                                <img src="{{ asset('storage/' . $related->cover) }}"
+                                    style="width: 100%; height: 100%; object-fit: cover;" alt="{{ $related->name }}">
+                                <div
+                                    style="position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.9); padding: 5px 12px; border-radius: 10px; font-weight: 700; color: var(--primary-color);">
+                                    ${{ $related->price_per_night }}
+                                </div>
+                            </div>
+                            <div style="padding: 1.5rem;">
+                                <h4 style="font-weight: 700; margin-bottom: 10px; color: var(--secondary-color);">
+                                    {{ $related->name }}</h4>
+                                <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                                    <i class="fas fa-map-marker-alt ml-1"></i> {{ $related->city }}
+                                </p>
+                                <a href="{{ route('apartments.show', $related->slug) }}" class="btn-outline"
+                                    style="display: block; text-align: center; padding: 10px; border-radius: 12px; border: 1.5px solid var(--primary-color); color: var(--primary-color); font-weight: 700; transition: 0.3s;">
+                                    عرض التفاصيل
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    </div>
 @endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
+    <script>
+        // Swiper Config
+        new Swiper(".mainSwiper", {
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev"
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+                dynamicBullets: true
+            },
+            loop: true,
+
+        });
+
+        // Booking Logic
+        const pricePerNight = {{ $apartment->price_per_night }};
+        const bookings = @json($apartment->bookings->map(fn($b) => ['from' => $b->start_date, 'to' => $b->end_date]));
+
+        flatpickr("#checkIn", {
+            "locale": "ar",
+            mode: "range",
+            minDate: "today",
+            dateFormat: "Y-m-d",
+            onChange: function(dates) {
+                if (dates.length === 2) {
+                    const diffDays = Math.ceil(Math.abs(dates[1] - dates[0]) / (1000 * 60 * 60 * 24));
+
+                    document.getElementById('bookingSummary').style.display = 'block';
+                    document.getElementById('nightCount').innerText = `${diffDays} ليلة`;
+                    document.getElementById('totalAmount').innerText = `${diffDays * pricePerNight} $`;
+
+                    const start = dates[0].toLocaleDateString('ar-EG');
+                    const end = dates[1].toLocaleDateString('ar-EG');
+                    const msg =
+                        `مرحباً، أرغب بحجز: {{ $apartment->name }}\nالوصول: ${start}\nالمغادرة: ${end}\nالمدة: ${diffDays} ليالي\nالإجمالي: ${diffDays * pricePerNight} $`;
+                    document.getElementById('whatsappBook').href =
+                        `https://wa.me/201068778340?text=${encodeURIComponent(msg)}`;
+                }
+            }
+        });
+        new Swiper(".relatedSwiper", {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            navigation: {
+                nextEl: ".swiper-button-next-related",
+                prevEl: ".swiper-button-prev-related",
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 2
+                },
+                1024: {
+                    slidesPerView: 3
+                },
+                1280: {
+                    slidesPerView: 4
+                },
+            },
+            loop: true,
+        });
+    </script>
+@endpush

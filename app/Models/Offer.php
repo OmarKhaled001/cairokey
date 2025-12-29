@@ -27,6 +27,7 @@ class Offer extends Model implements HasMedia
         'active',
         'featured',
         'cover',
+        'tags',
     ];
 
     protected $casts = [
@@ -37,6 +38,7 @@ class Offer extends Model implements HasMedia
         'end_date' => 'date',
         'active' => 'boolean',
         'featured' => 'boolean',
+        'tags' => 'array',
     ];
 
     public function getSlugOptions(): SlugOptions

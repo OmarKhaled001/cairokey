@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('icon')->nullable();
             $table->string('cover')->nullable();
             $table->json('images')->nullable();
+            $table->json('tags')->nullable();
 
             $table->tinyInteger('rating')->default(0);
 

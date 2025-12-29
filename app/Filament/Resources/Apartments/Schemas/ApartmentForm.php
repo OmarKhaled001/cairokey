@@ -7,6 +7,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Components\Fieldset;
@@ -39,8 +40,7 @@ class ApartmentForm
                                             ->columnSpanFull()
                                             ->label('الوصف')
                                             ->rows(5),
-                                        SpatieTagsInput::make('tags')
-                                            ->type('features')
+                                        TagsInput::make('tags')
                                             ->label('المميزات')
                                             ->columnSpanFull(),
                                     ]),
@@ -131,8 +131,7 @@ class ApartmentForm
                                     ->placeholder('https://www.youtube.com/watch?v')
                                     ->url()
                                     ->columnSpanFull()
-                                    ->suffixIcon(Heroicon::OutlinedVideoCamera)
-                                    ->required(),
+                                    ->suffixIcon(Heroicon::OutlinedVideoCamera),
 
                             ]),
                     ]),

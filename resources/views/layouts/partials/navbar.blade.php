@@ -1,35 +1,41 @@
 <nav class="navbar">
     <div class="container navbar-container">
         <!-- Logo (Rightmost) -->
-        <a href="{{ url('/') }}" class="nav-logo">
+        <a href="{{ route('home') }}" class="nav-logo">
             <i class="fas fa-globe-americas"></i> كايرو كي
         </a>
 
         <!-- Navigation Links (Center/Right Hidden on Mobile) -->
         <div class="nav-menu">
-            <a href="{{ url('/') }}" class="nav-link {{ request()->is('/') ? 'active' : '' }}">
+            <a href="{{ route('home') }}" class="nav-link {{ request()->is('/') ? 'active' : '' }}">
                 الرئيسية
             </a>
 
             <!-- Services Dropdown via CSS hover or JS click -->
-            <div class="dropdown">
+            {{-- <div class="dropdown">
                 <a href="#" class="nav-link {{ request()->is('services*') ? 'active' : '' }}">
                     خدماتنا <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
                 </a>
                 <div class="dropdown-content">
-                    <a href="{{ url('/services#apartments') }}"><i class="fas fa-building"></i> شقق</a>
-                    <a href="{{ url('/services#hotels') }}"><i class="fas fa-hotel"></i> فنادق</a>
-                    <a href="{{ url('/services#cars') }}"><i class="fas fa-car"></i> سيارات</a>
-                    <a href="{{ url('/services#flights') }}"><i class="fas fa-plane"></i> تذاكر طيران</a>
-                    <a href="{{ url('/services#airport') }}"><i class="fas fa-shuttle-van"></i> خدمات المطار</a>
+                    <a href="{{ route('/services#apartments') }}"><i class="fas fa-building"></i> شقق</a>
+                    <a href="{{ route('/services#hotels') }}"><i class="fas fa-hotel"></i> فنادق</a>
+                    <a href="{{ route('/services#cars') }}"><i class="fas fa-car"></i> سيارات</a>
+                    <a href="{{ route('/services#flights') }}"><i class="fas fa-plane"></i> تذاكر طيران</a>
+                    <a href="{{ route('/services#airport') }}"><i class="fas fa-shuttle-van"></i> خدمات المطار</a>
                 </div>
-            </div>
+            </div> --}}
 
-            <a href="{{ url('/blog') }}" class="nav-link {{ request()->is('blog') ? 'active' : '' }}">
-                المدونة
+            <a href="{{ route('apartments.index') }}" class="nav-link {{ request()->is('apartments') ? 'active' : '' }}">
+                شقق
             </a>
-            <a href="{{ url('/contact') }}" class="nav-link {{ request()->is('contact') ? 'active' : '' }}">
-                تواصل معنا
+            <a href="#" class="nav-link {{ request()->is('blog') ? 'active' : '' }}">
+                فنادق
+            </a>
+            <a href="#" class="nav-link {{ request()->is('blog') ? 'active' : '' }}">
+                سيارات
+            </a>
+            <a href="#" class="nav-link {{ request()->is('blog') ? 'active' : '' }}">
+                خدمات المطار
             </a>
 
             <!-- Auth Buttons (Moved inside menu for mobile) -->
@@ -41,9 +47,9 @@
                             <i class="fas fa-user-circle"></i> حسابي
                         </button>
                         <div class="dropdown-content" style="left:0; right:auto;">
-                            <a href="{{ url('/reservations') }}"><i class="fas fa-bookmark" style="margin-left:8px"></i>
+                            <a href="{{ route('/reservations') }}"><i class="fas fa-bookmark" style="margin-left:8px"></i>
                                 الحجوزات</a>
-                            <a href="{{ url('/profile') }}"><i class="fas fa-cog" style="margin-left:8px"></i>
+                            <a href="{{ route('/profile') }}"><i class="fas fa-cog" style="margin-left:8px"></i>
                                 الإعدادات</a>
                             <a href="#"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

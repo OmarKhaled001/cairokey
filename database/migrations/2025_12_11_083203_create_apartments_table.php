@@ -28,6 +28,7 @@ return new class extends Migration
             $table->text('video_url')->nullable();
             $table->string('cover')->nullable();
             $table->json('images')->nullable();
+            $table->json('tags')->nullable();
 
             $table->tinyInteger('rating')->default(0);
             $table->boolean('active')->default(true);
