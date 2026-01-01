@@ -19,7 +19,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Joaopaulolndev\FilamentGeneralSettings\FilamentGeneralSettingsPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -40,9 +39,7 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
-            ->plugins([
-                FilamentGeneralSettingsPlugin::make()->setIcon('heroicon-o-cog'),
-            ])->middleware([
+            ->plugins([])->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,

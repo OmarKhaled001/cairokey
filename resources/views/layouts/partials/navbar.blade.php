@@ -1,8 +1,14 @@
+@php
+    use App\Models\Setting;
+
+    $siteName = Setting::get('name', 'Cairo Key');
+    $logo = Setting::get('logo');
+@endphp
 <nav class="navbar">
     <div class="container navbar-container">
         <!-- Logo (Rightmost) -->
         <a href="{{ route('home') }}" class="nav-logo">
-            <i class="fas fa-globe-americas"></i> كايرو كي
+            <i class="fas fa-globe-americas"></i> {{ $siteName }}
         </a>
 
         <!-- Navigation Links (Center/Right Hidden on Mobile) -->
@@ -39,7 +45,7 @@
             </a>
 
             <!-- Auth Buttons (Moved inside menu for mobile) -->
-            <div class="nav-auth-items">
+            {{-- <div class="nav-auth-items">
                 @auth('client')
                     <div class="dropdown">
                         <button class="btn btn-primary profile-btn"
@@ -65,7 +71,7 @@
                         تسجيل الدخول
                     </a>
                 @endauth
-            </div>
+            </div> --}}
         </div>
 
         <!-- Mobile Toggle (Leftmost in RTL flow logic requires it to be last in DOM if direction:rtl and justify-between is used, OR manual ordering) -->

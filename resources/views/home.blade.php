@@ -17,7 +17,7 @@
     color: white;">
 
         <div class="container">
-            <h1 style="font-size: 3rem; margin-bottom: 1.5rem;">حلتك تبدأ من هنا</h1>
+            <h1 style="font-size: 3rem; margin-bottom: 1.5rem;">رحلتك تبدأ هنا</h1>
             <p style="font-size: 1.25rem; margin-bottom: 2rem;">شقق فاخرة وتأجير سيارات فخمة بين يديك.</p>
         </div>
     </section>
