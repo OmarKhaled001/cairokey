@@ -485,7 +485,7 @@
                         <i class="fas fa-filter text-primary"></i> تصفية النتائج
                     </h4>
 
-                    <div class="filter-group">
+                    {{-- <div class="filter-group">
                         <label>المحافظة</label>
                         <select name="governorate" class="form-control-custom">
                             <option value="">كل المحافظات</option>
@@ -494,7 +494,7 @@
                                     {{ $gov }}</option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> --}}
 
                     <div class="filter-group">
                         <label>المدينة</label>

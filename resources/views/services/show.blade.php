@@ -258,8 +258,11 @@
             <div class="booking-card" style="text-align: center;">
 
                 @php
+                    use App\Models\Setting;
+                    $whatsapp = Setting::get('whatsapp');
+
                     $message = 'مرحباً، أرغب بالاستفسار عن خدمة: ' . $service->name;
-                    $whatsappLink = 'https://wa.me/201068778340?text=' . urlencode($message);
+                    $whatsappLink = 'https://wa.me/' . $whatsapp . '?text=' . urlencode($message);
                 @endphp
 
                 <h3 style="font-weight: 800; margin-bottom: 1.5rem; color: var(--secondary-color);">مهتم بهذه الخدمة؟</h3>
