@@ -129,27 +129,29 @@
                                     <span class="badge-featured">مميز</span>
                                 @endif
                             </div>
-
+                            @php
+                                // تحديد المسار بناءً على نوع الموديل
+                                $route = '#';
+                                if ($item instanceof \App\Models\Apartment) {
+                                    $route = route('apartments.show', $item->slug);
+                                } elseif ($item instanceof \App\Models\Hotel) {
+                                    $route = route('hotels.show', $item->slug); // أو slug إذا توفر
+                                } elseif ($item instanceof \App\Models\Car) {
+                                    $route = route('cars.show', $item->slug);
+                                } elseif ($item instanceof \App\Models\Offer) {
+                                    $route = route('offers.show', $item->slug);
+                                } elseif ($item instanceof \App\Models\Service) {
+                                    $route = route('services.show', $item->slug);
+                                }
+                            @endphp
 
                             <div class=" card-body text-center p-3">
-                                <h3>{{ $item->name ?? $item->title }}</h3>
+                                <a href="{{ $route }}">
+                                    <h3>{{ $item->name ?? $item->title }}</h3>
+                                </a>
 
 
-                                @php
-                                    // تحديد المسار بناءً على نوع الموديل
-                                    $route = '#';
-                                    if ($item instanceof \App\Models\Apartment) {
-                                        $route = route('apartments.show', $item->slug);
-                                    } elseif ($item instanceof \App\Models\Hotel) {
-                                        $route = route('hotels.show', $item->slug); // أو slug إذا توفر
-                                    } elseif ($item instanceof \App\Models\Car) {
-                                        $route = route('cars.show', $item->slug);
-                                    } elseif ($item instanceof \App\Models\Offer) {
-                                        $route = route('offers.show', $item->slug);
-                                    } elseif ($item instanceof \App\Models\Service) {
-                                        $route = route('services.show', $item->slug);
-                                    }
-                                @endphp
+
 
                                 <a href="{{ $route }}" class="btn btn-primary mt-2">عرض التفاصيل</a>
                             </div>
@@ -185,7 +187,9 @@
 
                             {{-- Body --}}
                             <div class="card-body p-3 text-center">
-                                <h3>{{ $offer->name }}</h3>
+                                <a href="{{ route('offers.show', $offer->slug) }}">
+                                    <h3>{{ $offer->name }}</h3>
+                                </a>
 
                                 <p class="text-muted small">
                                     {{ \Illuminate\Support\Str::limit($offer->description, 80) }}
@@ -235,7 +239,9 @@
                             </div>
 
                             <div style="padding: 1.5rem;">
-                                <h3>{{ $apartment->name }}</h3>
+                                <a href="{{ route('apartments.show', $apartment->slug) }}">
+                                    <h3>{{ $apartment->name }}</h3>
+                                </a>
 
                                 <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
                                     <i class="fas fa-map-marker-alt"></i>
@@ -282,7 +288,9 @@
                             </div>
 
                             <div style="padding: 1.5rem;">
-                                <h3 style="margin-bottom: 0.75rem;">{{ $hotel->name }}</h3>
+                                <a href="{{ route('hotels.show', $hotel->slug) }}">
+                                    <h3 style="margin-bottom: 0.75rem;">{{ $hotel->name }}</h3>
+                                </a>
 
                                 <div style="margin-bottom: 0.75rem;">
                                     <x-star-rating :rating="$hotel->average_rating" :reviewsCount="0" :showCount="false" size="sm" />
@@ -294,13 +302,13 @@
                                 </p>
 
                                 <div class="d-flex justify-between align-center" style="margin-top: 1rem;">
-                                    <span style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">
+                                    {{-- <span style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">
                                         ${{ $hotel->price_per_night }} / ليلة
-                                    </span>
+                                    </span> --}}
 
                                     <a href="{{ route('hotels.show', $hotel->slug) }}" class="btn btn-primary"
                                         style="padding: 0.5rem 1rem;">
-                                        التفاصيل
+                                        عرض التفاصيل
                                     </a>
                                 </div>
                             </div>
@@ -330,17 +338,20 @@
                                 style="height: 250px; background-color: #ddd; background-image: url({{ $car->cover ? asset('storage/' . $car->cover) : 'https://placehold.co/600x400?text=Image' }}); background-size: cover;">
                             </div>
                             <div style="padding: 1.5rem;">
-                                <h3>{{ $car->name }}</h3>
+                                <a href="{{ route('cars.show', $car->slug) }}">
+                                    <h3>{{ $car->name }}</h3>
+                                </a>
                                 <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
                                     {{ $car->model }}
                                     -
                                     {{ $car->year }}</p>
                                 <div class="d-flex justify-between align-center" style="margin-top: 1rem;">
-                                    <span
+                                    {{-- <span
                                         style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">${{ $car->price_per_day }}
                                         /
-                                        يوم</span>
-                                    <a href="#" class="btn btn-primary" style="padding: 0.5rem 1rem;">التفاصيل</a>
+                                        يوم</span> --}}
+                                    <a href="{{ route('cars.show', $car->slug) }}" class="btn btn-primary"
+                                        style="padding: 0.5rem 1rem;">عرض التفاصيل</a>
                                 </div>
                             </div>
                         </div>
@@ -376,15 +387,18 @@
 
                             {{-- Body --}}
                             <div class="card-body p-3 text-center">
-                                <h3>{{ $service->name }}</h3>
+                                <a href="{{ route('services.show', $service->slug) }}">
+                                    <h3>{{ $service->name }}</h3>
+                                </a>
 
                                 <p class="text-muted small">
                                     {{ \Illuminate\Support\Str::limit($service->description, 80) }}
                                 </p>
 
-                                <a href="" id="whatsappBook" class="btn btn-primary mt-3">
-                                    <i class="fab fa-whatsapp"></i>
-                                    تواصل معنا
+
+                                <a href="{{ route('services.show', $service->slug) }}" id="whatsappBook"
+                                    class="btn btn-primary mt-3">
+                                    عرض التفاصيل
                                 </a>
                             </div>
                         </div>

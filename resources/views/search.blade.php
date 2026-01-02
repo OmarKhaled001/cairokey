@@ -121,8 +121,10 @@
                                 </div>
 
                                 <div style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
-                                    <h3 style="font-weight: 800; font-size: 1.2rem; margin-bottom: 0.5rem;">
-                                        {{ $item->name }}</h3>
+                                    <a href="{{ $route }}">
+                                        <h3 style="font-weight: 800; font-size: 1.2rem; margin-bottom: 0.5rem;">
+                                            {{ $item->name }}</h3>
+                                    </a>
 
                                     <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1rem;">
                                         <i class="fas fa-map-marker-alt ml-1"></i>

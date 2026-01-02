@@ -518,16 +518,18 @@
                                     style="height: 250px; background-color: #ddd; background-image: url({{ $car->cover ? asset('storage/' . $car->cover) : 'https://placehold.co/600x400?text=Image' }}); background-size: cover;">
                                 </div>
                                 <div style="padding: 1.5rem;">
-                                    <h3>{{ $car->name }}</h3>
+                                    <a href="{{ route('cars.show', $car) }}">
+                                        <h3>{{ $car->name }}</h3>
+                                    </a>
                                     <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
                                         {{ $car->model }} - {{ $car->year }}
                                     </p>
                                     <div class="d-flex justify-between align-center" style="margin-top: 1rem;">
-                                        <span style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">
+                                        {{-- <span style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">
                                             ${{ $car->price_per_day }} / يوم
-                                        </span>
+                                        </span> --}}
                                         <a href="{{ route('cars.show', $car) }}" class="btn btn-primary"
-                                            style="padding: 0.5rem 1rem;">التفاصيل</a>
+                                            style="padding: 0.5rem 1rem;">عرض التفاصيل</a>
                                     </div>
                                 </div>
                             </div>

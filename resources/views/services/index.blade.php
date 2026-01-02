@@ -97,15 +97,16 @@
 
                                 {{-- Body --}}
                                 <div class="card-body p-3 text-center">
-                                    <h3>{{ $service->name }}</h3>
+                                    <a href="{{ route('services.show', $service->slug) }}">
+                                        <h3>{{ $service->name }}</h3>
+                                    </a>
 
                                     <p class="text-muted small">
                                         {{ \Illuminate\Support\Str::limit($service->description, 80) }}
                                     </p>
-
                                     <a href="{{ route('services.show', $service->slug) }}" id="whatsappBook"
                                         class="btn btn-primary mt-3">
-                                        تفاصيل
+                                        عرض التفاصيل
                                     </a>
                                 </div>
                             </div>

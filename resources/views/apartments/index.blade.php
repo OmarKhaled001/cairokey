@@ -558,7 +558,9 @@
                                 </div>
 
                                 <div style="padding: 1.5rem;">
-                                    <h3>{{ $apartment->name }}</h3>
+                                    <a href="{{ route('apartments.show', $apartment->slug) }}">
+                                        <h3>{{ $apartment->name }}</h3>
+                                    </a>
 
                                     <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
                                         <i class="fas fa-map-marker-alt"></i>

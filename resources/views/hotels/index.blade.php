@@ -622,7 +622,9 @@
                                 </div>
 
                                 <div style="padding: 1.5rem;">
-                                    <h3 style="margin-bottom: 0.75rem;">{{ $hotel->name }}</h3>
+                                    <a href="{{ route('hotels.show', $hotel->slug) }}">
+                                        <h3 style="margin-bottom: 0.75rem;">{{ $hotel->name }}</h3>
+                                    </a>
 
                                     <div style="margin-bottom: 0.75rem;">
                                         <x-star-rating :rating="$hotel->average_rating" :reviewsCount="0" :showCount="false"
@@ -635,13 +637,13 @@
                                     </p>
 
                                     <div class="d-flex justify-between align-center" style="margin-top: 1rem;">
-                                        <span style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">
+                                        {{-- <span style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">
                                             ${{ $hotel->price_per_night }} / ليلة
-                                        </span>
+                                        </span> --}}
 
                                         <a href="{{ route('hotels.show', $hotel->slug) }}" class="btn btn-primary"
                                             style="padding: 0.5rem 1rem;">
-                                            التفاصيل
+                                            عرض التفاصيل
                                         </a>
                                     </div>
                                 </div>
