@@ -532,7 +532,7 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100"
+                    <button type="submit" class="btn btn-primary "
                         style="padding: 0.8rem; border-radius: 12px; font-weight: 700;">
                         تطبيق الفلتر
                     </button>
@@ -554,32 +554,27 @@
                                 style="background: var(--bg-light); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--card-shadow);">
 
                                 <div
-                                    style="height: 230px; background-image: url('{{ $apartment->cover ? asset('storage/' . $apartment->cover) : 'https://placehold.co/600x400?text=apartment' }}'); background-size: cover; background-position: center;">
+                                    style="height: 230px; background-image: url('{{ $apartment->cover ? asset('storage/' . $apartment->cover) : 'https://placehold.co/600x400?text=Apartment' }}'); background-size: cover; background-position: center;">
                                 </div>
 
                                 <div style="padding: 1.5rem;">
-                                    <h3 style="margin-bottom: 0.75rem;">{{ $apartment->name }}</h3>
-
-                                    {{-- Star Rating - if apartments have ratings --}}
-                                    {{-- Uncomment when apartment ratings are implemented
-                                    <div style="margin-bottom: 0.75rem;">
-                                        <x-star-rating :rating="$apartment->average_rating" :reviewsCount="0" :showCount="false" size="sm" />
-                                    </div>
-                                    --}}
+                                    <h3>{{ $apartment->name }}</h3>
 
                                     <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
                                         <i class="fas fa-map-marker-alt"></i>
                                         {{ $apartment->city }}
                                     </p>
 
-                                    <div class="d-flex justify-between align-center" style="margin-top: 1rem;">
-                                        <span style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">
-                                            ${{ $apartment->price_per_night }} / ليلة
-                                        </span>
+                                    <p style="color: var(--text-light); font-size: 0.9rem;">
+                                        <i class="fas fa-bed"></i>
+                                        {{ $apartment->rooms }} غرف نوم
+                                    </p>
+
+                                    <div class="d-flex justify-center align-center" style="margin-top: 1rem;">
 
                                         <a href="{{ route('apartments.show', $apartment->slug) }}" class="btn btn-primary"
                                             style="padding: 0.5rem 1rem;">
-                                            التفاصيل
+                                            عرض التفاصيل
                                         </a>
                                     </div>
                                 </div>

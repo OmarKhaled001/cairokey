@@ -129,15 +129,11 @@
                                         {{ $item->city ?? ($item->brand ?? 'كايرو كي') }}
                                     </p>
 
-                                    <div
-                                        style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 1rem;">
-                                        <span style="color: var(--primary-color); font-weight: 800; font-size: 1.1rem;">
-                                            ${{ number_format($priceValue) }} <small
-                                                style="font-size: 0.7rem;">{{ $priceLabel }}</small>
-                                        </span>
-                                        <a href="{{ $route }}" class="btn btn-primary"
-                                            style="padding: 0.5rem 1rem; border-radius: 10px; font-weight: 700;">
-                                            التفاصيل
+
+                                    <div class="d-flex justify-center align-center" style="margin-top: 1rem;">
+
+                                        <a href="{{ $route }}" class="btn btn-primary" style="padding: 0.5rem 1rem;">
+                                            عرض التفاصيل
                                         </a>
                                     </div>
                                 </div>

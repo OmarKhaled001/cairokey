@@ -72,22 +72,38 @@ class ApartmentForm
                                             ->label('عدد الغرف'),
 
                                         TextInput::make('price_per_night')
-                                            ->required()
+                                            ->nullable()
                                             ->numeric()
                                             ->suffix('$')
                                             ->minValue(0)
                                             ->default(0)
                                             ->label('السعر لكل ليلة'),
+
+                                        TextInput::make('min_price')
+                                            ->required()
+                                            ->numeric()
+                                            ->suffix('$')
+                                            ->minValue(0)
+                                            ->default(0)
+                                            ->label('السعر الأدنى'),
+
+                                        TextInput::make('max_price')
+                                            ->required()
+                                            ->numeric()
+                                            ->suffix('$')
+                                            ->minValue(0)
+                                            ->default(0)
+                                            ->label('السعر الأقصى'),
                                     ]),
 
                                 Fieldset::make('الحالة والتقييم')
                                     ->columns(3)
                                     ->schema([
-                                        Rating::make('rating')
-                                            ->required()
-                                            ->color('info')
-                                            ->default(5)
-                                            ->label('التقييم'),
+                                        // Rating::make('rating')
+                                        //     ->required()
+                                        //     ->color('info')
+                                        //     ->default(5)
+                                        //     ->label('التقييم'),
 
                                         Toggle::make('active')
                                             ->required()

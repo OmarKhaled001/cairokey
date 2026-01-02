@@ -27,6 +27,8 @@ class Apartment extends Model
         'cover',
         'images',
         'price_per_night',
+        'min_price',
+        'max_price',
         'rating',
         'active',
         'featured',
@@ -41,6 +43,8 @@ class Apartment extends Model
         'rooms' => 'integer',
         'images' => 'array',
         'tags' => 'array',
+        'min_price' => 'decimal:2',
+        'max_price' => 'decimal:2',
     ];
 
     public function getSlugOptions(): SlugOptions

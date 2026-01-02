@@ -356,38 +356,24 @@
                     <span class="unit">لكل يوم</span>
                 </div>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="font-weight: 700; color: #1e293b; display: block; margin-bottom: 0.75rem;">تاريخ
-                        الحجز</label>
-                    <input type="text" id="checkIn" placeholder="اختر تاريخ الاستلام والتسليم">
-                </div>
+                @php
+                    // سحب الرقم من الموديل
+                    $whatsappNumber = \App\Models\Setting::get('whatsapp');
 
-                <div class="error-message" id="errorMessage">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span id="errorText"></span>
-                </div>
+                    // تجهيز الرسالة
+                    $waMsg = "مرحباً كايرو كي، أرغب في الاستفسار عن حجز:\n";
+                    $waMsg .= '🚗 ' . $car->name . "\n";
 
-                <div id="bookingSummary" style="display: none;">
-                    <div class="summary-box">
-                        <div class="d-flex justify-between" style="margin-bottom: 0.75rem; color: #64748b;">
-                            <span>إجمالي الايام:</span>
-                            <span id="nightCount" style="color: #1e293b; font-weight: 700;">0</span>
-                        </div>
-                        <div class="d-flex justify-between"
-                            style="font-size: 1.25rem; font-weight: 800; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
-                            <span>الإجمالي:</span>
-                            <span id="totalAmount" style="color: var(--primary-color);">0 $</span>
-                        </div>
-                    </div>
-                </div>
+                    // تنظيف الرقم من أي مسافات أو علامات زائد لضمان عمل الرابط
+                    $cleanNumber = preg_replace('/[^0-9]/', '', $whatsappNumber);
+                    $waUrl = 'https://wa.me/' . $cleanNumber . '?text=' . urlencode($waMsg);
+                @endphp
 
-                <a href="#" id="whatsappBook" class="whatsapp-btn disabled">
-                    <i class="fab fa-whatsapp"></i>
-                    تأكيد الحجز الآن
+                <a href="{{ $waUrl }}" target="_blank" class="whatsapp-btn"
+                    style="background: #25D366; color: white; padding: 1.2rem; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 700; font-size: 1.15rem; text-decoration: none; transition: 0.4s ease; box-shadow: 0 12px 24px -8px rgba(37, 211, 102, 0.5);">
+                    <i class="fab fa-whatsapp" style="font-size: 1.7rem;"></i>
+                    تواصل للحجز الفوري
                 </a>
-                <p style="text-align: center; color: #94a3b8; font-size: 0.85rem; margin-top: 1.25rem;">
-                    <i class="fas fa-info-circle ml-1"></i> لن يتم خصم مبالغ حالياً، سيتم التواصل معك
-                </p>
             </div>
         </div>
     </div>

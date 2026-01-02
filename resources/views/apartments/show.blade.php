@@ -367,54 +367,51 @@
                 </div>
             </div>
 
-            {{-- كرت الحجز المطور --}}
+            {{-- كرت الحجز المعدل بنطاق سعري ورقم واتساب ديناميكي --}}
             <div class="booking-card border-0">
-                {{-- صندوق السعر المحدث --}}
                 <div class="price-box shadow-2xl"
                     style="background: #0f172a; color: white; padding: 2rem 1.5rem; border-radius: 24px; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between;">
-                    <div
-                        style="writing-mode: vertical-rl; text-orientation: mixed; font-size: 1.1rem; font-weight: 700; color: #fff; border-right: 2px solid rgba(255,255,255,0.1); padding-right: 15px; margin-right: 15px;">
-                        متوسط السعر
-                    </div>
+
+
 
                     <div style="flex-grow: 1; text-align: center;">
-                        <span style="font-size: 0.9rem; display: block; opacity: 0.8; margin-bottom: 5px;">يبدأ من</span>
                         <span
-                            style="font-size: 2.8rem; font-weight: 800; line-height: 1;">{{ number_format($apartment->price_per_night, 2) }}</span>
-                        <span style="font-size: 2rem; margin-top: 5px;">$</span>
+                            style="font-size: 0.85rem; display: block; opacity: 0.7; margin-bottom: 8px; letter-spacing: 1px;">متوسط
+                            الليلة</span>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                            <span
+                                style="font-size: 2.2rem; font-weight: 800;">{{ number_format($apartment->min_price, 0) }}</span>
+                            <span style="font-size: 1.5rem; opacity: 0.5;">—</span>
+                            <span
+                                style="font-size: 2.2rem; font-weight: 800;">{{ number_format($apartment->max_price, 0) }}</span>
+                            <span style="font-size: 1.8rem; margin-right: 5px;">$</span>
+                        </div>
                     </div>
 
                     <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px; color: #64748b;">
-                        <span style="font-size: 1rem; font-weight: 600;">لكل</span>
-                        <span style="font-size: 1rem; font-weight: 600;">ليلة</span>
+                        <i class="fas fa-info-circle" style="font-size: 1.2rem; margin-bottom: 5px;"></i>
+                        <span style="font-size: 0.8rem; font-weight: 600; text-align: left;"></span>
                     </div>
                 </div>
 
-                <div class="offer-summary"
-                    style="margin-bottom: 2rem; color: #475569; text-align: center; font-weight: 500; line-height: 1.6;">
-                    <p>استمتع بإقامة فاخرة في {{ $apartment->name }}.<br>السعر النهائي يتحدد حسب تواريخ الحجز والموسم.</p>
-                </div>
-
                 @php
-                    // تجهيز رسالة الواتساب التلقائية
-                    $waMessage = "مرحباً كايرو كي، أرغب في الاستفسار عن حجز:\n";
-                    $waMessage .= '🏠 العقار: ' . $apartment->name . "\n";
-                    $waMessage .= '💰 السعر المعلن: ' . $apartment->price_per_night . "$ لكل ليلة";
-                    $waLink = 'https://wa.me/201068778340?text=' . urlencode($waMessage);
+                    // سحب الرقم من الموديل
+                    $whatsappNumber = \App\Models\Setting::get('whatsapp');
+
+                    // تجهيز الرسالة
+                    $waMsg = "مرحباً كايرو كي، أرغب في الاستفسار عن حجز:\n";
+                    $waMsg .= '🏠 ' . $apartment->name . "\n";
+
+                    // تنظيف الرقم من أي مسافات أو علامات زائد لضمان عمل الرابط
+                    $cleanNumber = preg_replace('/[^0-9]/', '', $whatsappNumber);
+                    $waUrl = 'https://wa.me/' . $cleanNumber . '?text=' . urlencode($waMsg);
                 @endphp
 
-                {{-- زر الواتساب المباشر --}}
-                <a href="{{ $waLink }}" target="_blank" class="whatsapp-btn"
-                    style="background: #25D366; color: white; padding: 1.25rem; border-radius: 18px; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 700; font-size: 1.2rem; text-decoration: none; transition: 0.3s; box-shadow: 0 10px 20px -5px rgba(37, 211, 102, 0.4);">
-                    <i class="fab fa-whatsapp" style="font-size: 1.6rem;"></i>
-                    احجز الآن عبر واتساب
+                <a href="{{ $waUrl }}" target="_blank" class="whatsapp-btn"
+                    style="background: #25D366; color: white; padding: 1.2rem; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 700; font-size: 1.15rem; text-decoration: none; transition: 0.4s ease; box-shadow: 0 12px 24px -8px rgba(37, 211, 102, 0.5);">
+                    <i class="fab fa-whatsapp" style="font-size: 1.7rem;"></i>
+                    تواصل للحجز الفوري
                 </a>
-
-                <div
-                    style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 1.5rem; color: #94a3b8; font-size: 0.85rem;">
-                    <i class="fas fa-bolt"></i>
-                    <span>رد فوري وتأكيد متاح 24/7</span>
-                </div>
             </div>
         </div>
     </div>

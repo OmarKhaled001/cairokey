@@ -596,7 +596,7 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100"
+                    <button type="submit" class="btn btn-primary "
                         style="padding: 0.8rem; border-radius: 12px; font-weight: 700;">
                         تطبيق الفلتر
                     </button>

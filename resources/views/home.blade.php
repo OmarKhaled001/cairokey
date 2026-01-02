@@ -247,14 +247,11 @@
                                     {{ $apartment->rooms }} غرف نوم
                                 </p>
 
-                                <div class="d-flex justify-between align-center" style="margin-top: 1rem;">
-                                    <span style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">
-                                        ${{ $apartment->price_per_night }} / ليلة
-                                    </span>
+                                <div class="d-flex justify-center align-center" style="margin-top: 1rem;">
 
                                     <a href="{{ route('apartments.show', $apartment->slug) }}" class="btn btn-primary"
                                         style="padding: 0.5rem 1rem;">
-                                        التفاصيل
+                                        عرض التفاصيل
                                     </a>
                                 </div>
                             </div>
