@@ -456,16 +456,16 @@
     <!-- Overlay للموبايل -->
     <div class="filter-overlay" id="filterOverlay" onclick="closeFilter()"></div>
 
-    <!-- زر الفلتر للموبايل -->
-    <button class="mobile-filter-toggle" onclick="openFilter()">
+    {{-- <!-- زر الفلتر للموبايل --> --}}
+    {{-- <button class="mobile-filter-toggle" onclick="openFilter()">
         <i class="fas fa-filter"></i>
         <span>الفلاتر</span>
-    </button>
+    </button> --}}
 
     <div class="container section-padding">
         <div class="grid main-layout" style="grid-template-columns: 300px 1fr; gap: 2.5rem; display: grid;">
 
-            <aside id="filterSidebar">
+            {{-- <aside id="filterSidebar">
                 <form action="{{ route('hotels.index') }}" method="GET" class="filter-sidebar">
 
                     <!-- Header للموبايل فقط -->
@@ -496,7 +496,7 @@
                         </select>
                     </div> --}}
 
-                    <div class="filter-group">
+            {{-- <div class="filter-group">
                         <label>المدينة</label>
                         <select name="city" class="form-control-custom">
                             <option value="">كل المدن</option>
@@ -608,7 +608,7 @@
                         </a>
                     @endif
                 </form>
-            </aside>
+            </aside> --}}
 
             <main>
                 @if ($hotels->count() > 0)
