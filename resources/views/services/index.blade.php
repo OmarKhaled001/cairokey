@@ -13,7 +13,7 @@
             font-family: "Cairo";
         }
 
-        .hero-hotels {
+        .hero-services {
             height: 35vh;
             background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)),
                 url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80');
@@ -306,12 +306,12 @@
 
         /* تحسينات الموبايل */
         @media (max-width: 768px) {
-            .hero-hotels {
+            .hero-services {
                 height: 25vh;
                 margin-bottom: 2rem;
             }
 
-            .hero-hotels h1 {
+            .hero-services h1 {
                 font-size: 2rem !important;
             }
 
@@ -437,7 +437,7 @@
                 font-size: 0.9rem;
             }
 
-            .hero-hotels h1 {
+            .hero-services h1 {
                 font-size: 1.6rem !important;
             }
         }
@@ -446,7 +446,7 @@
 
 @section('content')
 
-    <section class="hero-hotels">
+    <section class="hero-services">
         <div class="container text-center">
             <h1 style="font-weight: 800; font-size: 3rem;">اكتشف ملاذك القادم</h1>
             <p style="opacity: 0.9;">أفضل الشقق المختارة بعناية لتناسب ذوقك</p>
@@ -466,7 +466,7 @@
         <div class="grid main-layout" style="grid-template-columns: 300px 1fr; gap: 2.5rem; display: grid;">
 
             {{-- <aside id="filterSidebar">
-                <form action="{{ route('hotels.index') }}" method="GET" class="filter-sidebar">
+                <form action="{{ route('services.index') }}" method="GET" class="filter-sidebar">
 
                     <!-- Header للموبايل فقط -->
                     <div class="filter-mobile-header" style="display: none;">
@@ -602,7 +602,7 @@
                     </button>
 
                     @if (request()->anyFilled(['governorate', 'city', 'price_min', 'price_max', 'rating', 'sort']))
-                        <a href="{{ route('hotels.index') }}"
+                        <a href="{{ route('services.index') }}"
                             style="display: block; text-align: center; margin-top: 1rem; color: #64748b; font-size: 0.8rem;">
                             إعادة ضبط
                         </a>
@@ -611,46 +611,50 @@
             </aside> --}}
 
             <main>
-                @if ($hotels->count() > 0)
+                @if ($services->count() > 0)
                     <div class="grid grid-cols-3 gap-4">
-                        @foreach ($hotels as $hotel)
-                            <div
-                                style="background: var(--bg-light); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--card-shadow);">
+                        @foreach ($services as $service)
+                            <div class="card"
+                                style="background:white;border-radius:12px;box-shadow:var(--card-shadow);overflow:hidden;">
 
-                                <div
-                                    style="height: 230px; background-image: url('{{ $hotel->cover ? asset('storage/' . $hotel->cover) : 'https://placehold.co/600x400?text=hotel' }}'); background-size: cover; background-position: center;">
+                                {{-- Image --}}
+                                <div class="card-image"
+                                    style="background-image:url('{{ $service->cover ? asset('storage/' . $service->cover) : 'https://placehold.co/600x400?text=Offer' }}');">
+
+                                    @if ($service->featured)
+                                        <span class="badge-featured">مميز</span>
+                                    @endif
                                 </div>
 
-                                <div style="padding: 1.5rem;">
-                                    <h3 style="margin-bottom: 0.75rem;">{{ $hotel->name }}</h3>
+                                {{-- Body --}}
+                                <div class="card-body p-3 text-center">
+                                    <h3>{{ $service->name }}</h3>
 
-                                    <div style="margin-bottom: 0.75rem;">
-                                        <x-star-rating :rating="$hotel->average_rating" :reviewsCount="0" :showCount="false"
-                                            size="sm" />
-                                    </div>
-
-                                    <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        {{ $hotel->city }}
+                                    <p class="text-muted small">
+                                        {{ \Illuminate\Support\Str::limit($service->description, 80) }}
                                     </p>
 
-                                    <div class="d-flex justify-between align-center" style="margin-top: 1rem;">
-                                        <span style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">
-                                            ${{ $hotel->price_per_night }} / ليلة
-                                        </span>
-
-                                        <a href="{{ route('hotels.show', $hotel->slug) }}" class="btn btn-primary"
-                                            style="padding: 0.5rem 1rem;">
-                                            التفاصيل
-                                        </a>
-                                    </div>
+                                    <a href="" id="whatsappBook" class="btn btn-primary mt-3">
+                                        <i class="fab fa-whatsapp"></i>
+                                        تواصل معنا
+                                    </a>
                                 </div>
                             </div>
+                            <script>
+                                document.getElementById('whatsappBook').addEventListener('click', function(e) {
+                                    e.preventDefault();
+                                    var phoneNumber = "+2001068778340";
+                                    var name = "{{ $service->name }}";
+
+
+                                    window.open('https://wa.me/' + phoneNumber + '?text=' + name, '_blank');
+                                });
+                            </script>
                         @endforeach
                     </div>
 
                     <div class="pagination-wrapper">
-                        {{ $hotels->links() }}
+                        {{ $services->links() }}
                     </div>
                 @else
                     {{-- Modern Empty State --}}
@@ -670,7 +674,7 @@
                             لا توجد فنادق تطابق معايير البحث. جرب تعديل الفلاتر أو البحث مرة أخرى.
                         </p>
 
-                        <a href="{{ route('hotels.index') }}" class="btn btn-primary"
+                        <a href="{{ route('services.index') }}" class="btn btn-primary"
                             style="padding: 0.875rem 2rem; border-radius: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
                             <i class="fas fa-redo"></i>
                             <span>إعادة تعيين الفلاتر</span>
