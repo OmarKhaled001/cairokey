@@ -367,46 +367,54 @@
                 </div>
             </div>
 
-            {{-- الحجز --}}
-            <div class="booking-card">
-                <div class="price-box shadow-lg">
-                    <span class="unit">يبدأ من</span>
-                    <span class="amount">${{ $apartment->price_per_night }}</span>
-                    <span class="unit">لكل ليلة</span>
-                </div>
+            {{-- كرت الحجز المطور --}}
+            <div class="booking-card border-0">
+                {{-- صندوق السعر المحدث --}}
+                <div class="price-box shadow-2xl"
+                    style="background: #0f172a; color: white; padding: 2rem 1.5rem; border-radius: 24px; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between;">
+                    <div
+                        style="writing-mode: vertical-rl; text-orientation: mixed; font-size: 1.1rem; font-weight: 700; color: #fff; border-right: 2px solid rgba(255,255,255,0.1); padding-right: 15px; margin-right: 15px;">
+                        متوسط السعر
+                    </div>
 
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="font-weight: 700; color: #1e293b; display: block; margin-bottom: 0.75rem;">تاريخ
-                        الإقامة</label>
-                    <input type="text" id="checkIn" placeholder="اختر تاريخ الوصول والمغادرة">
-                </div>
+                    <div style="flex-grow: 1; text-align: center;">
+                        <span style="font-size: 0.9rem; display: block; opacity: 0.8; margin-bottom: 5px;">يبدأ من</span>
+                        <span
+                            style="font-size: 2.8rem; font-weight: 800; line-height: 1;">{{ number_format($apartment->price_per_night, 2) }}</span>
+                        <span style="font-size: 2rem; margin-top: 5px;">$</span>
+                    </div>
 
-                <div class="error-message" id="errorMessage">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span id="errorText"></span>
-                </div>
-
-                <div id="bookingSummary" style="display: none;">
-                    <div class="summary-box">
-                        <div class="d-flex justify-between" style="margin-bottom: 0.75rem; color: #64748b;">
-                            <span>إجمالي الليالي:</span>
-                            <span id="nightCount" style="color: #1e293b; font-weight: 700;">0</span>
-                        </div>
-                        <div class="d-flex justify-between"
-                            style="font-size: 1.25rem; font-weight: 800; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
-                            <span>الإجمالي:</span>
-                            <span id="totalAmount" style="color: var(--primary-color);">0 $</span>
-                        </div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px; color: #64748b;">
+                        <span style="font-size: 1rem; font-weight: 600;">لكل</span>
+                        <span style="font-size: 1rem; font-weight: 600;">ليلة</span>
                     </div>
                 </div>
 
-                <a href="#" id="whatsappBook" class="whatsapp-btn disabled">
-                    <i class="fab fa-whatsapp"></i>
-                    تأكيد الحجز الآن
+                <div class="offer-summary"
+                    style="margin-bottom: 2rem; color: #475569; text-align: center; font-weight: 500; line-height: 1.6;">
+                    <p>استمتع بإقامة فاخرة في {{ $apartment->name }}.<br>السعر النهائي يتحدد حسب تواريخ الحجز والموسم.</p>
+                </div>
+
+                @php
+                    // تجهيز رسالة الواتساب التلقائية
+                    $waMessage = "مرحباً كايرو كي، أرغب في الاستفسار عن حجز:\n";
+                    $waMessage .= '🏠 العقار: ' . $apartment->name . "\n";
+                    $waMessage .= '💰 السعر المعلن: ' . $apartment->price_per_night . "$ لكل ليلة";
+                    $waLink = 'https://wa.me/201068778340?text=' . urlencode($waMessage);
+                @endphp
+
+                {{-- زر الواتساب المباشر --}}
+                <a href="{{ $waLink }}" target="_blank" class="whatsapp-btn"
+                    style="background: #25D366; color: white; padding: 1.25rem; border-radius: 18px; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 700; font-size: 1.2rem; text-decoration: none; transition: 0.3s; box-shadow: 0 10px 20px -5px rgba(37, 211, 102, 0.4);">
+                    <i class="fab fa-whatsapp" style="font-size: 1.6rem;"></i>
+                    احجز الآن عبر واتساب
                 </a>
-                <p style="text-align: center; color: #94a3b8; font-size: 0.85rem; margin-top: 1.25rem;">
-                    <i class="fas fa-info-circle ml-1"></i> لن يتم خصم مبالغ حالياً، سيتم التواصل معك
-                </p>
+
+                <div
+                    style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 1.5rem; color: #94a3b8; font-size: 0.85rem;">
+                    <i class="fas fa-bolt"></i>
+                    <span>رد فوري وتأكيد متاح 24/7</span>
+                </div>
             </div>
         </div>
     </div>
