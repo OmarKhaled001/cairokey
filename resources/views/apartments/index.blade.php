@@ -92,6 +92,8 @@
             z-index: 998;
             opacity: 0;
             transition: opacity 0.3s ease;
+            pointer-events: none;
+            /* ضيف دي */
         }
 
         .filter-overlay.active {
@@ -313,7 +315,6 @@
                 gap: 1rem !important;
             }
 
-            /* إخفاء الفلتر على الموبايل وجعله منبثق */
             aside {
                 position: fixed;
                 top: 0;
@@ -323,12 +324,17 @@
                 height: 100vh;
                 overflow-y: auto;
                 z-index: 999;
-                transition: right 0.3s ease;
+                transition: right 0.3s ease, visibility 0.3s ease;
+                /* ضيف فيزبيليتي هنا */
                 background: white;
+                visibility: hidden;
+                /* خليه مخفي تماماً عن التفاعل */
             }
 
             aside.active {
                 right: 0;
+                visibility: visible;
+                /* يظهر لما ياخد كلاس أكتيف */
             }
 
             .filter-sidebar {
