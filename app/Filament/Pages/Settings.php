@@ -20,6 +20,9 @@ class Settings extends SettingsPage
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
+    protected static ?string $modelLabel = 'إعدادات';
+    protected static ?string $navigationLabel = 'إعدادات';
+    protected static ?string $pluralModelLabel = 'إعدادات';
     protected static string $settings = Setting::class;
 
     public ?array $data = [];

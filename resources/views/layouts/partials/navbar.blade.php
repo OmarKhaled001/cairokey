@@ -40,9 +40,11 @@
             <a href="{{ route('cars.index') }}" class="nav-link {{ request()->is('cars') ? 'active' : '' }}">
                 سيارات
             </a>
-            <a href="#" class="nav-link {{ request()->is('blog') ? 'active' : '' }}">
+            <a href="{{ route('services.index') }}" class="nav-link {{ request()->is('services') ? 'active' : '' }}">
                 خدمات المطار
             </a>
+
+
 
             <!-- Auth Buttons (Moved inside menu for mobile) -->
             {{-- <div class="nav-auth-items">
