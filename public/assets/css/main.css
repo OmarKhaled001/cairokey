@@ -280,3 +280,68 @@ ul {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+/* Mobile Optimization (max-width: 768px) */
+@media (max-width: 768px) {
+    /* 1. الجريد يقلب عمود واحد لكل الشاشات الصغيرة */
+    .grid-cols-2, 
+    .grid-cols-3, 
+    .grid-cols-4 {
+        grid-template-columns: repeat(1, 1fr) !important;
+        gap: 1rem;
+    }
+
+    /* 2. تصغير الهيدر والبادينج عشان الموبايل */
+    .section-padding {
+        padding: 3rem 0;
+    }
+
+    .section-title h2 {
+        font-size: 1.75rem;
+    }
+
+    .container {
+        padding: 0 1rem;
+    }
+
+    /* 3. تعديل الفوتر للموبايل */
+    footer .grid {
+        text-align: center !important; /* توسيط النصوص في الموبايل */
+        gap: 2.5rem;
+    }
+
+    footer div[style*="justify-content: space-between"] {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    footer p {
+        margin: 0 auto;
+    }
+
+    /* 4. تعديل الكروت في الموبايل */
+    .card-image {
+        height: 200px; /* تقليل ارتفاع الصورة شوية */
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    /* 5. الدروب داون في الموبايل (عشان ميتحدفش بره الشاشة) */
+    .dropdown-content {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        background-color: var(--bg-secondary);
+    }
+}
+
+/* Extra Small Devices (max-width: 480px) */
+@media (max-width: 480px) {
+    .btn {
+        width: 100%; /* الأزرار تاخد العرض كله لسهولة الضغط */
+        text-align: center;
+    }
+}
