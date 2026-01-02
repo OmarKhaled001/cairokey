@@ -103,9 +103,9 @@
                                         {{ \Illuminate\Support\Str::limit($service->description, 80) }}
                                     </p>
 
-                                    <a href="" id="whatsappBook" class="btn btn-primary mt-3">
-                                        <i class="fab fa-whatsapp"></i>
-                                        تواصل معنا
+                                    <a href="{{ route('services.show', $service->slug) }}" id="whatsappBook"
+                                        class="btn btn-primary mt-3">
+                                        تفاصيل
                                     </a>
                                 </div>
                             </div>
@@ -113,16 +113,13 @@
                     </div>
 
                     {{-- الـ Pagination لو استخدمت SimplePaginate أو Manual --}}
-                    @if (method_exists($searchResults, 'links'))
-                        <div class="pagination-wrapper mt-5">
-                            {{ $searchResults->appends(request()->all())->links() }}
-                        </div>
-                    @endif
+                    <div class="pagination-wrapper mt-5">
+                        {{ $services->links() }}
+                    </div>
                 @else
                     <div style="text-align: center; padding: 5rem 2rem;">
                         <i class="fas fa-search-minus" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
                         <h2 style="font-weight: 800;">لا توجد خدمات!</h2>
-                        <p class="text-muted">لم نجد أي خدمات تطابق "{{ request('search') }}"، جرب كلمات أخرى.</p>
                         <a href="{{ url('/') }}" class="btn btn-primary mt-3" style="border-radius: 12px;">العودة
                             للرئيسية</a>
                     </div>
