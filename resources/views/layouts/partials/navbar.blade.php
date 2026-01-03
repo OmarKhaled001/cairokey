@@ -8,7 +8,7 @@
     <div class="container navbar-container">
         <!-- Logo (Rightmost) -->
         <a href="{{ route('home') }}" class="nav-logo">
-            <img src="{{ asset('storage/' . $logo) }}" alt="Logo">
+            <img src="{{ asset('storage/' . $logo) }}" alt="Logo" style="width: 50px; height: 50px;">
             {{ $siteName }}
         </a>
 
@@ -32,7 +32,8 @@
                 </div>
             </div> --}}
 
-            <a href="{{ route('apartments.index') }}" class="nav-link {{ request()->is('apartments') ? 'active' : '' }}">
+            <a href="{{ route('apartments.index') }}"
+                class="nav-link {{ request()->is('apartments') ? 'active' : '' }}">
                 شقق
             </a>
             <a href="{{ route('hotels.index') }}" class="nav-link {{ request()->is('hotels') ? 'active' : '' }}">

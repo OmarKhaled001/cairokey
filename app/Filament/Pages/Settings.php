@@ -62,16 +62,21 @@ class Settings extends SettingsPage
                                     ->schema([
                                         FileUpload::make('logo')
                                             ->label('شعار الموقع')
-                                            ->image()
+                                            ->disk('public')
+                                            ->visibility('public')
                                             ->directory('settings')
+                                            ->image()
                                             ->imageEditor()
                                             ->previewable()
-                                            ->downloadable(),
+                                            ->downloadable()
+                                            ->columnSpanFull(),
 
                                         FileUpload::make('favicon')
                                             ->label('أيقونة الموقع')
-                                            ->image()
+                                            ->disk('public')
+                                            ->visibility('public')
                                             ->directory('settings')
+                                            ->image()
                                             ->imageCropAspectRatio('1:1')
                                             ->helperText('يفضل 32x32 أو 64x64'),
                                     ]),
