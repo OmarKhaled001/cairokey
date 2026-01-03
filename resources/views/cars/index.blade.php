@@ -92,7 +92,7 @@
             z-index: 998;
             opacity: 0;
             transition: opacity 0.3s ease;
-            pointer-events: none; /* ضيف دي */
+            pointer-events: none;
         }
 
         .filter-overlay.active {
@@ -436,7 +436,7 @@
                         <i class="fas fa-filter text-primary"></i> تصفية النتائج
                     </h4>
 
-                    <div class="filter-group">
+                    {{-- <div class="filter-group">
                         <label>السنة</label>
                         <select name="year" class="form-control-custom">
                             <option value="">كل السنوات</option>
@@ -445,7 +445,7 @@
                                     {{ $year }}</option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> --}}
 
                     <div class="filter-group">
                         <label>العلامة التجارية</label>
@@ -458,7 +458,7 @@
                         </select>
                     </div>
 
-                    <div class="filter-group">
+                    {{-- <div class="filter-group">
                         <label>الموديل</label>
                         <select name="model" class="form-control-custom">
                             <option value="">كل الموديلات</option>
@@ -467,7 +467,7 @@
                                     {{ $model }}</option>
                             @endforeach
                         </select>
-                    </div>
+                    </div> --}}
 
                     <div class="filter-group">
                         <label>نطاق السعر (باليوم)</label>
@@ -526,9 +526,9 @@
                                     <a href="{{ route('cars.show', $car) }}">
                                         <h3>{{ $car->name }}</h3>
                                     </a>
-                                    <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                    {{-- <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
                                         {{ $car->model }} - {{ $car->year }}
-                                    </p>
+                                    </p> --}}
                                     <div class="d-flex justify-between align-center" style="margin-top: 1rem;">
                                         {{-- <span style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">
                                             ${{ $car->price_per_day }} / يوم

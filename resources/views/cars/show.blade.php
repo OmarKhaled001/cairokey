@@ -312,13 +312,13 @@
                     style="background: var(--primary-color); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; margin-bottom: 1rem; display: inline-block;">
                     {{ $car->brand }}
                 </span>
-                <span class="badge"
+                {{-- <span class="badge"
                     style="background: var(--primary-color); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; margin-bottom: 1rem; display: inline-block;">
                     {{ $car->model }}
-                </span>
-                <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 2rem;">
+                </span> --}}
+                {{-- <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 2rem;">
                     <i class="fas fa-calendar-alt text-primary ml-1"></i> موديل سنة {{ $car->year }}
-                </p>
+                </p> --}}
 
                 <div class="description-section">
                     <h3 style="font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
