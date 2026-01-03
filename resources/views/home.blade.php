@@ -341,10 +341,10 @@
                                 <a href="{{ route('cars.show', $car->slug) }}">
                                     <h3>{{ $car->name }}</h3>
                                 </a>
-                                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                                {{-- <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.5rem;">
                                     {{ $car->model }}
                                     -
-                                    {{ $car->year }}</p>
+                                    {{ $car->year }}</p> --}}
                                 <div class="d-flex justify-between align-center" style="margin-top: 1rem;">
                                     {{-- <span
                                         style="color: var(--primary-color); font-weight: bold; font-size: 1.1rem;">${{ $car->price_per_day }}
