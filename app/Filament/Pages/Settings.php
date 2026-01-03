@@ -66,9 +66,9 @@ class Settings extends SettingsPage
                                             ->visibility('public')
                                             ->directory('settings')
                                             ->image()
-                                            ->imageEditor()
-                                            ->previewable()
-                                            ->downloadable(),
+                                            ->downloadable()
+                                            ->imageEditor(),
+
 
                                         FileUpload::make('favicon')
                                             ->label('أيقونة الموقع')
@@ -76,8 +76,7 @@ class Settings extends SettingsPage
                                             ->visibility('public')
                                             ->directory('settings')
                                             ->image()
-                                            ->imageCropAspectRatio('1:1')
-                                            ->helperText('يفضل 32x32 أو 64x64'),
+\                                            ->helperText('يفضل 32x32 أو 64x64'),
                                     ]),
                             ]),
 
