@@ -8,7 +8,8 @@
     <div class="container navbar-container">
         <!-- Logo (Rightmost) -->
         <a href="{{ route('home') }}" class="nav-logo">
-            <i class="fas fa-globe-americas"></i> {{ $siteName }}
+            <img src="{{ asset('storage/' . $logo) }}" alt="Logo">
+            {{ $siteName }}
         </a>
 
         <!-- Navigation Links (Center/Right Hidden on Mobile) -->
