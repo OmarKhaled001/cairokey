@@ -68,8 +68,7 @@ class Settings extends SettingsPage
                                             ->image()
                                             ->imageEditor()
                                             ->previewable()
-                                            ->downloadable()
-                                            ->columnSpanFull(),
+                                            ->downloadable(),
 
                                         FileUpload::make('favicon')
                                             ->label('أيقونة الموقع')
