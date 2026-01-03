@@ -76,7 +76,7 @@ class Settings extends SettingsPage
                                             ->visibility('public')
                                             ->directory('settings')
                                             ->image()
-\                                            ->helperText('يفضل 32x32 أو 64x64'),
+                                            ->helperText('يفضل 32x32 أو 64x64'),
                                     ]),
                             ]),
 
