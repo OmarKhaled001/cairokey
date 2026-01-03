@@ -8,7 +8,7 @@
     <div class="container navbar-container">
         <!-- Logo (Rightmost) -->
         <a href="{{ route('home') }}" class="nav-logo">
-            <img src="{{ asset('storage/' . $logo) }}" alt="Logo" style="width: 50px; height: 50px;">
+            <img src="{{ asset('storage/' . $logo) }}" alt="Logo" style="width: auto; height: 50px;">
             {{ $siteName }}
         </a>
 

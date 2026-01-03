@@ -36,7 +36,7 @@
 
 {{-- Favicon --}}
 @if ($favicon)
-    <link rel="icon" type="image/png" href="{{ asset('storage/' . $favicon) }}">
+    <link rel="icon"href="{{ asset('storage/' . $favicon) }}">
 @endif
 
 <!-- Fonts -->
