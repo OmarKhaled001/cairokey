@@ -39,11 +39,8 @@ class HotelForm
 
 
 
-                                        TextInput::make('price_per_night')
-                                            ->required()
-                                            ->numeric()
-                                            ->prefix('$')
-                                            ->label('السعر لكل ليلة'),
+                                        TextInput::make('city')
+                                            ->label('المدينة'),
 
                                         Textarea::make('description')
                                             ->columnSpanFull()
@@ -54,21 +51,6 @@ class HotelForm
                                             ->label('الخدمات والمميزات')
                                             ->columnSpanFull()
                                             ->placeholder('أضف مميزات مثل (مسبح، خدمة غرف، إفطار مجاني)'),
-                                    ]),
-                                Fieldset::make('الموقع الجغرافي')
-                                    ->schema([
-                                        TextInput::make('governorate')
-                                            ->label('المحافظة'),
-
-                                        TextInput::make('city')
-                                            ->label('المدينة'),
-
-                                        TextInput::make('address')
-                                            ->label('العنوان التفصيلي'),
-
-                                        TextInput::make('location')
-                                            ->suffixIcon(Heroicon::OutlinedMap)
-                                            ->label('الموقع (رابط الخريطة)'),
                                     ]),
 
 

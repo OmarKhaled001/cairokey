@@ -21,14 +21,10 @@ class HotelsTable
                 TextColumn::make('name')
                     ->label('الاسم')
                     ->searchable(),
-                TextColumn::make('governorate')
-                    ->label('المحافظة')
+                TextColumn::make('city')
+                    ->label('المدينة')
                     ->searchable(),
-                TextColumn::make('price_per_night')
-                    ->numeric()
-                    ->sortable()
-                    ->suffix('$')
-                    ->label('السعر'),
+
                 CheckboxColumn::make('featured')
                     ->label('مميز'),
                 IconColumn::make('active')

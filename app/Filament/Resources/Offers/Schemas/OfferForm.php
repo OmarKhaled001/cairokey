@@ -90,7 +90,6 @@ class OfferForm
                         ->minItems(1)
                         ->columns(3)
                         ->defaultItems(1)
-                        ->afterStateUpdated(fn($state, $set, $get) => self::updateOriginalPrice($get, $set))
                         ->columnSpanFull(),
                 ])
                 ->columnSpanFull(),
@@ -106,7 +105,6 @@ class OfferForm
                     TextInput::make('original_price')
                         ->label('السعر الأصلي')
                         ->numeric()
-                        ->readOnly()
                         ->default(0)
                         ->prefix('$'),
 
@@ -114,18 +112,13 @@ class OfferForm
                         ->label('تاريخ بداية العرض')
                         ->required()
                         ->default(now())
-                        ->reactive()
-                        ->live()
-                        ->afterStateUpdated(fn($state, $set, $get) => self::updateOriginalPrice($get, $set)),
+                        ->reactive(),
 
                     DatePicker::make('end_date')
                         ->label('تاريخ نهاية العرض')
                         ->required()
                         ->afterOrEqual('start_date')
-                        ->default(now()->addDays(7))
-                        ->reactive()
-                        ->live()
-                        ->afterStateUpdated(fn($state, $set, $get) => self::updateOriginalPrice($get, $set)),
+                        ->default(now()->addDays(7)),
                 ])
                 ->columnSpanFull(),
 
@@ -151,53 +144,5 @@ class OfferForm
                 ->image()
                 ->columnSpanFull(),
         ]);
-    }
-
-    protected static function updateOriginalPrice(callable $get, callable $set): void
-    {
-        $items = $get('items') ?? [];
-        $totalOriginalPrice = 0;
-
-        if (! is_array($items) || empty($items)) {
-            $set('original_price', 0);
-            return;
-        }
-
-        foreach ($items as $item) {
-            $type = $item['bookable_type'] ?? null;
-            $id   = $item['bookable_id'] ?? null;
-            $days = max(1, (int)($item['days'] ?? 1));
-
-            if (! ($type && $id)) {
-                continue;
-            }
-
-            if (! class_exists($type)) {
-                continue;
-            }
-
-            $model = $type::find($id);
-            if (! $model) {
-                continue;
-            }
-
-            $price = 0;
-            $multiplier = 0;
-
-            if (is_a($model, Apartment::class) || is_a($model, Hotel::class)) {
-                $price = $model->price_per_night ?? 0;
-                $multiplier = $days;
-            } elseif (is_a($model, Car::class)) {
-                $price = $model->price_per_day ?? 0;
-                $multiplier = $days;
-            } elseif (is_a($model, Service::class)) {
-                $price = $model->price ?? 0;
-                $multiplier = 1;
-            }
-
-            $totalOriginalPrice += max(0, $price * $multiplier);
-        }
-
-        $set('original_price', $totalOriginalPrice);
     }
 }

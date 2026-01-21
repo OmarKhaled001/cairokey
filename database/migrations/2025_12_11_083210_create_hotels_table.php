@@ -15,18 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->nullable()->unique();
-            $table->string('location');
-            $table->decimal('price_per_night', 10, 2);
+            $table->text('description')->nullable();
 
             $table->string('cover')->nullable();
             $table->json('images')->nullable();
             $table->json('tags')->nullable();
 
-            $table->string('governorate')->nullable();
             $table->string('city')->nullable();
-            $table->string('address')->nullable();
 
-            $table->text('description')->nullable();
+
             $table->tinyInteger('rating')->default(0);
 
             $table->boolean('active')->default(true);

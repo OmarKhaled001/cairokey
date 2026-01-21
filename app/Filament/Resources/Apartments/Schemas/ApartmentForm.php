@@ -33,52 +33,23 @@ class ApartmentForm
                                     ->schema([
                                         TextInput::make('name')
                                             ->required()
-                                            ->columnSpanFull()
                                             ->label('الاسم'),
-
+                                        TextInput::make('city')
+                                            ->label('المدينة'),
                                         Textarea::make('description')
                                             ->columnSpanFull()
+                                            ->required()
                                             ->label('الوصف')
                                             ->rows(5),
                                         TagsInput::make('tags')
                                             ->label('المميزات')
+                                            ->required()
                                             ->columnSpanFull(),
-                                    ]),
-
-                                Fieldset::make('الموقع الجغرافي')
-                                    ->schema([
-                                        TextInput::make('governorate')
-                                            ->label('المحافظة'),
-
-                                        TextInput::make('city')
-                                            ->label('المدينة'),
-
-                                        TextInput::make('address')
-                                            ->label('العنوان التفصيلي'),
-
-                                        TextInput::make('location')
-                                            ->suffixIcon(Heroicon::OutlinedVideoCamera)
-                                            ->label('الموقع (رابط الخريطة)'),
                                     ]),
 
                                 Fieldset::make('المواصفات المالية والعددية')
                                     ->columns(2)
                                     ->schema([
-                                        TextInput::make('rooms')
-                                            ->required()
-                                            ->numeric()
-                                            ->minValue(0)
-                                            ->default(0)
-                                            ->label('عدد الغرف'),
-
-                                        TextInput::make('price_per_night')
-                                            ->nullable()
-                                            ->numeric()
-                                            ->suffix('$')
-                                            ->minValue(0)
-                                            ->default(0)
-                                            ->label('السعر لكل ليلة'),
-
                                         TextInput::make('min_price')
                                             ->required()
                                             ->numeric()
@@ -86,7 +57,6 @@ class ApartmentForm
                                             ->minValue(0)
                                             ->default(0)
                                             ->label('السعر الأدنى'),
-
                                         TextInput::make('max_price')
                                             ->required()
                                             ->numeric()
@@ -99,12 +69,6 @@ class ApartmentForm
                                 Fieldset::make('الحالة والتقييم')
                                     ->columns(3)
                                     ->schema([
-                                        // Rating::make('rating')
-                                        //     ->required()
-                                        //     ->color('info')
-                                        //     ->default(5)
-                                        //     ->label('التقييم'),
-
                                         Toggle::make('active')
                                             ->required()
                                             ->default(true)
@@ -128,7 +92,6 @@ class ApartmentForm
                                     ->label('الغلاف')
                                     ->image()
                                     ->columnSpanFull(),
-
                                 FileUpload::make('images')
                                     ->disk('public')
                                     ->visibility('public')
@@ -147,6 +110,7 @@ class ApartmentForm
                                     ->placeholder('https://www.youtube.com/watch?v')
                                     ->url()
                                     ->columnSpanFull()
+                                    ->nullable()
                                     ->suffixIcon(Heroicon::OutlinedVideoCamera),
 
                             ]),

@@ -514,25 +514,7 @@
                         </select>
                     </div>
 
-                    <div class="filter-group">
-                        <label>نطاق السعر (بالليلة)</label>
-                        <div class="price-range-container" style="padding: 10px 5px 30px;">
-                            <input type="range" id="priceRange" min="{{ $minAvailablePrice }}"
-                                max="{{ $maxAvailablePrice }}" value="{{ request('price_max', $maxAvailablePrice) }}"
-                                class="modern-range" oninput="updatePriceLabel(this.value)">
 
-                            <div
-                                style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.85rem; font-weight: 700;">
-                                <span>${{ $minAvailablePrice }}</span>
-                                <span class="text-primary">حتى: $<span
-                                        id="currentPriceLabel">{{ request('price_max', $maxAvailablePrice) }}</span></span>
-                            </div>
-
-                            <input type="hidden" name="price_min" value="{{ $minAvailablePrice }}">
-                            <input type="hidden" name="price_max" id="price_max_hidden"
-                                value="{{ request('price_max', $maxAvailablePrice) }}">
-                        </div>
-                    </div>
 
                     <div class="filter-group">
                         <label>
@@ -598,8 +580,6 @@
                             <option value="highest_rated" {{ request('sort') == 'highest_rated' ? 'selected' : '' }}>
                                 الأعلى تقييماً
                             </option>
-                            <option value="lowest_price" {{ request('sort') == 'lowest_price' ? 'selected' : '' }}>السعر:
-                                من الأقل</option>
                         </select>
                     </div>
 

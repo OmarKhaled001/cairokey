@@ -11,19 +11,9 @@ class HotelController extends Controller
     {
         $query = Hotel::where('active', true);
 
-        $minAvailablePrice = Hotel::where('active', true)->min('price_per_night') ?? 0;
-        $maxAvailablePrice = Hotel::where('active', true)->max('price_per_night') ?? 5000;
 
-        if ($request->filled('price_min')) {
-            $query->where('price_per_night', '>=', $request->price_min);
-        }
-        if ($request->filled('price_max')) {
-            $query->where('price_per_night', '<=', $request->price_max);
-        }
 
-        if ($request->filled('governorate')) {
-            $query->where('governorate', $request->governorate);
-        }
+
         if ($request->filled('city')) {
             $query->where('city', $request->city);
         }
@@ -48,15 +38,12 @@ class HotelController extends Controller
         }
 
         $hotels = $query->paginate(12)->withQueryString();
-        $governorates = Hotel::where('active', true)->distinct()->pluck('governorate');
         $cities = Hotel::where('active', true)->distinct()->pluck('city');
 
         return view('hotels.index', compact(
             'hotels',
-            'governorates',
             'cities',
-            'minAvailablePrice',
-            'maxAvailablePrice'
+
         ));
     }
 

@@ -26,20 +26,14 @@ class ApartmentsTable
                 TextColumn::make('name')
                     ->searchable()
                     ->label('الاسم'),
-                TextColumn::make('governorate')
-                    ->searchable()
-                    ->label('المحافظة'),
+
                 TextColumn::make('city')
                     ->searchable()
                     ->label('المدينة'),
                 TagsColumn::make('tags')
                     ->limitList(2)
                     ->label('المميزات'),
-                TextColumn::make('price_per_night')
-                    ->numeric()
-                    ->sortable()
-                    ->suffix('$')
-                    ->label('السعر'),
+
 
                 IconColumn::make('active')
                     ->boolean()

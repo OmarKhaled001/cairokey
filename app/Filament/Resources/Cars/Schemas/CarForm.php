@@ -40,9 +40,10 @@ class CarForm
                                     ->schema([
                                         TextInput::make('name')
                                             ->required()
-                                            ->columnSpanFull()
                                             ->label('الاسم'),
-
+                                        TextInput::make('brand')
+                                            ->required()
+                                            ->label('العلامة التجارية'),
                                         Textarea::make('description')
                                             ->columnSpanFull()
                                             ->label('الوصف')
@@ -52,26 +53,6 @@ class CarForm
                                             ->columnSpanFull(),
                                     ]),
 
-                                /* ------------------ *
-                             * Car Specifications
-                             * ------------------ */
-                                Fieldset::make('مواصفات السيارة')
-                                    ->columns(2)
-                                    ->schema([
-                                        TextInput::make('brand')
-                                            ->required()
-                                            ->label('العلامة التجارية'),
-
-                                        TextInput::make('model')
-                                            ->required()
-                                            ->label('الموديل'),
-
-                                        TextInput::make('year')
-                                            ->numeric()
-                                            ->minValue(1900)
-                                            ->maxValue(date('Y') + 1)
-                                            ->label('السنة'),
-                                    ]),
 
                                 /* ------------------ *
                              * Pricing
@@ -85,6 +66,7 @@ class CarForm
                                             ->suffix('$')
                                             ->minValue(0)
                                             ->default(0)
+                                            ->columnSpanFull()
                                             ->label('السعر لليوم'),
 
                                         Toggle::make('active')

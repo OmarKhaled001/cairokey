@@ -12,20 +12,18 @@ class ApartmentController extends Controller
         $query = Apartment::where('active', true);
 
         // جلب أقل وأعلى سعر موجودين فعلياً في قاعدة البيانات
-        $minAvailablePrice = Apartment::where('active', true)->min('price_per_night') ?? 0;
-        $maxAvailablePrice = Apartment::where('active', true)->max('price_per_night') ?? 5000;
+        $minAvailablePrice = Apartment::where('active', true)->min('min_price') ?? 0;
+        $maxAvailablePrice = Apartment::where('active', true)->max('max_price') ?? 5000;
 
         // تطبيق الفلتر
         if ($request->filled('price_min')) {
-            $query->where('price_per_night', '>=', $request->price_min);
-        }
-        if ($request->filled('price_max')) {
-            $query->where('price_per_night', '<=', $request->price_max);
+            $query->where('max_price', '>=', $request->price_min);
         }
 
-        if ($request->filled('governorate')) {
-            $query->where('governorate', $request->governorate);
+        if ($request->filled('price_max')) {
+            $query->where('min_price', '<=', $request->price_max);
         }
+
         if ($request->filled('city')) {
             $query->where('city', $request->city);
         }
@@ -34,8 +32,9 @@ class ApartmentController extends Controller
         $sort = $request->get('sort', 'newest');
         switch ($sort) {
             case 'lowest_price':
-                $query->orderBy('price_per_night', 'asc');
+                $query->orderBy('min_price', 'asc');
                 break;
+
             case 'newest':
             default:
                 $query->latest();
@@ -47,12 +46,10 @@ class ApartmentController extends Controller
         }])->paginate(1)->withQueryString();
 
         $apartments = $query->paginate(12)->withQueryString();
-        $governorates = Apartment::where('active', true)->distinct()->pluck('governorate');
         $cities = Apartment::where('active', true)->distinct()->pluck('city');
 
         return view('apartments.index', compact(
             'apartments',
-            'governorates',
             'cities',
             'minAvailablePrice',
             'maxAvailablePrice'

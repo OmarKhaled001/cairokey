@@ -28,14 +28,7 @@ class CarsTable
                     ->badge()
                     ->color('success')
                     ->searchable(),
-                TextColumn::make('model')
-                    ->label('الموديل')
-                    ->searchable(),
-                TextColumn::make('year')
-                    ->label('السنة')
-                    ->badge()
-                    ->color('danger')
-                    ->sortable(),
+
                 TagsColumn::make('tags')
                     ->limitList(2)
                     ->label('المميزات'),

@@ -16,9 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->nullable()->unique();
             $table->text('description')->nullable();
-            $table->string('model');
             $table->string('brand');
-            $table->integer('year')->nullable();
+
 
             $table->string('cover')->nullable();
             $table->json('images')->nullable();

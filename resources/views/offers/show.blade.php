@@ -281,32 +281,7 @@
             </div>
         </div>
 
-        @if ($relatedOffers->count() > 0)
-            <div style="margin-top: 5rem;">
-                <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 2rem; text-align: center;">عروض أخرى قد تعجبك
-                </h2>
-                <div class="row">
-                    @foreach ($relatedOffers as $relatedItem)
-                        <div class="col-md-3 mb-4">
-                            <div class="card h-100 shadow-sm border-0" style="border-radius: 16px; overflow: hidden;">
-                                <img src="{{ $relatedItem->cover ? asset('storage/' . $relatedItem->cover) : 'https://placehold.co/600x400?text=Offer' }}"
-                                    class="card-img-top" alt="{{ $relatedItem->name }}"
-                                    style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <h5 class="card-title fw-bold">{{ $relatedItem->name }}</h5>
-                                    <p class="text-muted small">{{ Str::limit($relatedItem->description, 60) }}</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-3">
-                                        <span class="text-primary fw-bold">{{ $relatedItem->price }} $</span>
-                                        <a href="{{ route('offers.show', $relatedItem->slug) }}"
-                                            class="btn btn-sm btn-outline-primary rounded-pill">التفاصيل</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endif
+
 
     </div>
 @endsection

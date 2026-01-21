@@ -27,12 +27,6 @@ class CarController extends Controller
         if ($request->filled('brand')) {
             $query->where('brand', $request->brand);
         }
-        if ($request->filled('model')) {
-            $query->where('model', $request->model);
-        }
-        if ($request->filled('year')) {
-            $query->where('year', $request->year);
-        }
 
         // Sorting
         $sort = $request->get('sort', 'newest');
@@ -48,14 +42,11 @@ class CarController extends Controller
 
         $cars = $query->paginate(12)->withQueryString();
         $brands = Car::where('active', true)->distinct()->pluck('brand');
-        $models = Car::where('active', true)->distinct()->pluck('model');
-        $years = Car::where('active', true)->distinct()->pluck('year');
+
 
         return view('cars.index', compact(
             'cars',
             'brands',
-            'models',
-            'years',
             'minAvailablePrice',
             'maxAvailablePrice'
         ));

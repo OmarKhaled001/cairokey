@@ -306,11 +306,6 @@
             </div>
 
             <div class="booking-card">
-                <div class="price-box shadow-lg">
-                    <span class="unit">يبدأ من</span>
-                    <span class="amount">${{ $hotel->price_per_night }}</span>
-                    <span class="unit">لكل ليلة</span>
-                </div>
 
                 @php
                     // سحب الرقم من الموديل
@@ -324,6 +319,10 @@
                     $cleanNumber = preg_replace('/[^0-9]/', '', $whatsappNumber);
                     $waUrl = 'https://wa.me/' . $cleanNumber . '?text=' . urlencode($waMsg);
                 @endphp
+
+                <p style="color: #64748b; margin-bottom: 2rem;">
+                    تواصل معنا الآن عبر واتساب لمعرفة المزيد من التفاصيل والأسعار والحجز .
+                </p>
 
                 <a href="{{ $waUrl }}" target="_blank" class="whatsapp-btn"
                     style="background: #25D366; color: white; padding: 1.2rem; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 12px; font-weight: 700; font-size: 1.15rem; text-decoration: none; transition: 0.4s ease; box-shadow: 0 12px 24px -8px rgba(37, 211, 102, 0.5);">

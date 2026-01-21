@@ -16,11 +16,7 @@ class Hotel extends Model
     protected $fillable = [
         'name',
         'slug',
-        'location',
-        'governorate',
         'city',
-        'address',
-        'price_per_night',
         'description',
         'rating',
         'active',
@@ -33,7 +29,6 @@ class Hotel extends Model
     protected $casts = [
         'active' => 'boolean',
         'featured' => 'boolean',
-        'price_per_night' => 'decimal:2',
         'rating' => 'integer',
         'images' => 'array',
         'tags' => 'array',
