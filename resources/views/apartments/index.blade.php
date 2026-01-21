@@ -573,10 +573,7 @@
                                         {{ $apartment->city }}
                                     </p>
 
-                                    <p style="color: var(--text-light); font-size: 0.9rem;">
-                                        <i class="fas fa-bed"></i>
-                                        {{ $apartment->rooms }} غرف نوم
-                                    </p>
+
 
                                     <div class="d-flex justify-center align-center" style="margin-top: 1rem;">
 
