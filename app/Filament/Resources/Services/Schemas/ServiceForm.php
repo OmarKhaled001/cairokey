@@ -89,6 +89,18 @@ class ServiceForm
                                     ->label('الغلاف')
                                     ->image()
                                     ->columnSpanFull(),
+                                FileUpload::make('images')
+                                    ->disk('public')
+                                    ->visibility('public')
+                                    ->directory('services/images')
+                                    ->label('الصور')
+                                    ->multiple()
+                                    ->image()
+                                    ->columnSpanFull()
+                                    ->preserveFilenames()
+                                    ->reorderable()
+                                    ->panelLayout('grid')
+                                    ->helperText('يمكنك تحميل صور متعددة وإعادة ترتيبها.'),
 
 
                             ]),

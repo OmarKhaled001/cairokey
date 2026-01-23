@@ -96,18 +96,18 @@ class CarForm
                                     ->image()
                                     ->columnSpanFull(),
 
-                                // FileUpload::make('images')
-                                //     ->disk('public')
-                                //     ->visibility('public')
-                                //     ->directory('cars/images')
-                                //     ->label('الصور')
-                                //     ->multiple()
-                                //     ->image()
-                                //     ->columnSpanFull()
-                                //     ->preserveFilenames()
-                                //     ->reorderable()
-                                //     ->panelLayout('grid')
-                                //     ->helperText('يمكنك تحميل صور متعددة وإعادة ترتيبها.'),
+                                FileUpload::make('images')
+                                    ->disk('public')
+                                    ->visibility('public')
+                                    ->directory('cars/images')
+                                    ->label('الصور')
+                                    ->multiple()
+                                    ->image()
+                                    ->columnSpanFull()
+                                    ->preserveFilenames()
+                                    ->reorderable()
+                                    ->panelLayout('grid')
+                                    ->helperText('يمكنك تحميل صور متعددة وإعادة ترتيبها.'),
                             ]),
                     ]),
             ]);
