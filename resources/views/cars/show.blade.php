@@ -36,8 +36,9 @@
             object-fit: cover;
         }
 
+
         /* تصميم الميديا والسلايدر */
-        .apartment-gallery {
+        .car-gallery {
             background: #000;
             border-radius: var(--radius-lg);
             overflow: hidden;
@@ -56,15 +57,21 @@
             object-fit: cover;
         }
 
-        .video-container {
+        /* تصميم الغلاف */
+        .car-cover-container {
+            position: relative;
             width: 100%;
-            height: 100%;
+            height: 500px;
+            /* Fixed: added semicolon */
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 3rem;
         }
 
-        .video-container iframe {
+        .car-cover-container img {
             width: 100%;
             height: 100%;
-            border: none;
+            object-fit: cover;
         }
 
         /* تفاصيل الشقة */
@@ -271,12 +278,10 @@
                 grid-template-columns: 1fr;
             }
 
-            .apartment-gallery,
             .car-cover-container {
                 height: 400px;
             }
 
-            .apartment-title,
             .car-title {
                 font-size: 1.8rem;
             }
@@ -292,15 +297,45 @@
 @section('content')
     <div class="show-container container">
 
-        {{-- 1. صورة الغلاف فقط --}}
-        <div class="car-cover-container shadow-xl">
-            <img src="{{ $car->cover ? asset('storage/' . $car->cover) : 'https://placehold.co/1200x500?text=Car+Image' }}"
-                alt="{{ $car->name }}">
-            <div
-                style="position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(transparent, rgba(0,0,0,0.2));">
-            </div>
-        </div>
+        {{-- 1. السلايدر (يظهر فقط إذا وجد ميديا) --}}
+        @php
+            $hasImages = $car->images && count($car->images) > 0;
+            $hasCover = !empty($car->cover);
+        @endphp
 
+        @if ($hasImages || $hasCover)
+            <div class="car-gallery shadow-xl">
+                <div class="swiper mainSwiper">
+                    <div class="swiper-wrapper">
+                        {{-- Show cover first if available --}}
+                        @if ($hasCover)
+                            <div class="swiper-slide">
+                                <img src="{{ asset('storage/' . $car->cover) }}" alt="{{ $car->name }}">
+                            </div>
+                        @endif
+
+                        {{-- Then show additional images --}}
+                        @if ($hasImages)
+                            @foreach ($car->images as $image)
+                                <div class="swiper-slide">
+                                    <img src="{{ asset('storage/' . $image) }}" alt="{{ $car->name }}">
+                                </div>
+                            @endforeach
+                        @endif
+
+                        {{-- Fallback if neither cover nor images exist --}}
+                        @if (!$hasCover && !$hasImages)
+                            <div class="swiper-slide">
+                                <img src="https://placehold.co/600x400?text=Car" alt="{{ $car->name }}">
+                            </div>
+                        @endif
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+        @endif
         {{-- 2. الشبكة الرئيسية --}}
         <div class="details-grid">
 
@@ -379,112 +414,28 @@
     </div>
 @endsection
 
+
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <script>
-        // Booking Logic
-        const pricePerDay = {{ $car->price_per_day }};
-        const bookings = @json($car->bookings->map(fn($b) => ['from' => $b->start_date, 'to' => $b->end_date]));
-
-        // دالة للتحقق من التداخل مع الحجوزات
-        function checkDateOverlap(start, end) {
-            for (let booking of bookings) {
-                const bookingStart = new Date(booking.from);
-                const bookingEnd = new Date(booking.to);
-
-                // التحقق من أي تداخل
-                if (start <= bookingEnd && end >= bookingStart) {
-                    return {
-                        hasOverlap: true,
-                        bookingStart: booking.from,
-                        bookingEnd: booking.to
-                    };
-                }
-            }
-            return {
-                hasOverlap: false
-            };
-        }
-
-        // دالة لتعطيل التواريخ المحجوزة
-        function disableBookedDates(date) {
-            const dateStr = date.toISOString().split('T')[0];
-
-            for (let booking of bookings) {
-                const start = new Date(booking.from);
-                const end = new Date(booking.to);
-
-                // تعطيل جميع التواريخ داخل نطاق الحجز
-                if (date >= start && date <= end) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // إعداد Flatpickr
-        const fp = flatpickr("#checkIn", {
-            "locale": "ar",
-            mode: "range",
-            minDate: "today",
-            dateFormat: "Y-m-d",
-            disable: [disableBookedDates], // تعطيل التواريخ المحجوزة
-            onChange: function(dates, dateStr, instance) {
-                const errorMsg = document.getElementById('errorMessage');
-                const errorText = document.getElementById('errorText');
-                const bookingSummary = document.getElementById('bookingSummary');
-                const whatsappBtn = document.getElementById('whatsappBook');
-
-                // إخفاء الرسالة والملخص عند البداية
-                errorMsg.classList.remove('show');
-                bookingSummary.style.display = 'none';
-                whatsappBtn.classList.add('disabled');
-
-                if (dates.length === 2) {
-                    const startDate = dates[0];
-                    const endDate = dates[1];
-
-                    // التحقق من التداخل
-                    const overlapCheck = checkDateOverlap(startDate, endDate);
-
-                    if (overlapCheck.hasOverlap) {
-                        // إظهار رسالة خطأ
-                        errorText.textContent =
-                            `عذراً، هناك حجز مؤكد من ${overlapCheck.bookingStart} إلى ${overlapCheck.bookingEnd}. الرجاء اختيار تواريخ أخرى.`;
-                        errorMsg.classList.add('show');
-
-                        // مسح التواريخ المحددة
-                        instance.clear();
-                        return;
-                    }
-
-                    // حساب عدد الأيام
-                    const diffDays = Math.ceil(Math.abs(endDate - startDate) / (1000 * 60 * 60 * 24));
-                    const totalPrice = diffDays * pricePerDay;
-
-                    // إظهار الملخص
-                    bookingSummary.style.display = 'block';
-                    document.getElementById('nightCount').innerText = `${diffDays} يوم`;
-                    document.getElementById('totalAmount').innerText = `${totalPrice} $`;
-
-                    // تفعيل زر الواتساب
-                    whatsappBtn.classList.remove('disabled');
-
-                    // إعداد رسالة الواتساب
-                    const start = startDate.toLocaleDateString('ar-EG');
-                    const end = endDate.toLocaleDateString('ar-EG');
-                    const msg =
-                        `مرحباً، أرغب بحجز: {{ $car->name }}\nالوصول: ${start}\nالمغادرة: ${end}\nالمدة: ${diffDays} يوم\nالإجمالي: ${totalPrice} $`;
-                    whatsappBtn.href = `https://wa.me/201068778340?text=${encodeURIComponent(msg)}`;
-                }
+        // Swiper Config
+        new Swiper(".mainSwiper", {
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev"
             },
-            onDayCreate: function(dObj, dStr, fp, dayElem) {
-                // إضافة tooltip للأيام المحجوزة
-                if (disableBookedDates(dayElem.dateObj)) {
-                    dayElem.title = "هذا اليوم محجوز";
-                }
-            }
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+                dynamicBullets: true
+            },
+            loop: true,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            speed: 600,
         });
     </script>
 @endpush

@@ -3,6 +3,10 @@
 @section('name', $service->name . ' - كايرو كي')
 
 @push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Add Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
     <style>
         :root {
             --accent-bg: #f8fafc;
@@ -16,6 +20,26 @@
         .show-container {
             padding-top: 5rem;
             padding-bottom: 5rem;
+        }
+
+        /* تصميم الميديا والسلايدر */
+        .service-gallery {
+            background: #000;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            height: 500px;
+            margin-bottom: 2rem;
+        }
+
+        .swiper {
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* Cover Image */
@@ -201,6 +225,10 @@
                 font-size: 1.8rem;
             }
 
+            .service-gallery {
+                height: 400px;
+            }
+
             .booking-card {
                 position: relative;
                 top: 0;
@@ -212,14 +240,45 @@
 @section('content')
     <div class="show-container container">
 
-        {{-- Cover Image --}}
-        <div class="service-cover-container shadow-xl">
-            <img src="{{ $service->cover ? asset('storage/' . $service->cover) : 'https://placehold.co/1200x500?text=Service+Image' }}"
-                alt="{{ $service->name }}">
-            <div
-                style="position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(transparent, rgba(0,0,0,0.2));">
+        {{-- 1. السلايدر (يظهر فقط إذا وجد ميديا) --}}
+        @php
+            $hasImages = $service->images && count($service->images) > 0;
+            $hasCover = !empty($service->cover);
+        @endphp
+
+        @if ($hasImages || $hasCover)
+            <div class="service-gallery shadow-xl">
+                <div class="swiper mainSwiper">
+                    <div class="swiper-wrapper">
+                        {{-- Show cover first if available --}}
+                        @if ($hasCover)
+                            <div class="swiper-slide">
+                                <img src="{{ asset('storage/' . $service->cover) }}" alt="{{ $service->name }}">
+                            </div>
+                        @endif
+
+                        {{-- Then show additional images --}}
+                        @if ($hasImages)
+                            @foreach ($service->images as $image)
+                                <div class="swiper-slide">
+                                    <img src="{{ asset('storage/' . $image) }}" alt="{{ $service->name }}">
+                                </div>
+                            @endforeach
+                        @endif
+
+                        {{-- Fallback if neither cover nor images exist --}}
+                        @if (!$hasCover && !$hasImages)
+                            <div class="swiper-slide">
+                                <img src="https://placehold.co/1200x500?text=Service+Image" alt="{{ $service->name }}">
+                            </div>
+                        @endif
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-pagination"></div>
+                </div>
             </div>
-        </div>
+        @endif
 
         <div class="details-grid">
             {{-- Service Info --}}
@@ -280,7 +339,32 @@
             </div>
         </div>
 
-
-
     </div>
 @endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
+
+    <script>
+        // Swiper Config
+        new Swiper(".mainSwiper", {
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev"
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+                dynamicBullets: true
+            },
+            loop: true,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            speed: 600,
+        });
+    </script>
+@endpush
