@@ -20,16 +20,16 @@ class HomeController extends Controller
             ->merge(Car::where('featured', true)->latest()->take(6)->get())
             ->merge(Hotel::where('featured', true)->latest()->take(6)->get())
             ->sortByDesc('created_at')
-            ->take(6);
+            ->take(3);
 
         // Offers
-        $offers = Offer::latest()->take(6)->get();
+        $offers = Offer::latest()->take(3)->get();
 
         // Latest Sections
-        $services = Service::latest()->take(6)->get();
-        $apartments = Apartment::latest()->take(6)->get();
-        $cars = Car::latest()->take(6)->get();
-        $hotels = Hotel::latest()->take(6)->get();
+        $services = Service::latest()->take(3)->get();
+        $apartments = Apartment::latest()->take(3)->get();
+        $cars = Car::latest()->take(3)->get();
+        $hotels = Hotel::latest()->take(3)->get();
 
         return view('home', compact(
             'featuredItems',

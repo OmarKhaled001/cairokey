@@ -47,41 +47,48 @@
 
             <div class="grid grid-cols-4 gap-4 " style="justify-content: center; align-items: center; ">
                 <!-- 1. Furnished Apartments -->
-                <div class="card text-center"
-                    style="padding: 2rem; background: var(--bg-light); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); transition: transform 0.3s;">
-                    <i class="fas fa-building"
-                        style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">شقق مفروشة</h3>
-                    <p style="color: var(--text-light); font-size: 0.9rem;">وحدات سكنية راقية ومجهزة بالكامل.</p>
-                </div>
-
+                <a href="{{ route('apartments.index') }}">
+                    <div class="card text-center"
+                        style="padding: 2rem; background: var(--bg-light); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); transition: transform 0.3s;">
+                        <i class="fas fa-building"
+                            style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">شقق مفروشة</h3>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">وحدات سكنية راقية ومجهزة بالكامل.</p>
+                    </div>
+                </a>
                 <!-- 2. Hotels -->
-                <div class="card text-center"
-                    style="padding: 2rem; background: var(--bg-light); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); transition: transform 0.3s;">
-                    <i class="fas fa-hotel"
-                        style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">فنادق</h3>
-                    <p style="color: var(--text-light); font-size: 0.9rem;">حجوزات في أرقى الفنادق العالمية.</p>
-                </div>
-
+                <a href="{{ route('hotels.index') }}">
+                    <div class="card text-center"
+                        style="padding: 2rem; background: var(--bg-light); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); transition: transform 0.3s;">
+                        <i class="fas fa-hotel"
+                            style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">فنادق</h3>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">حجوزات في أرقى الفنادق العالمية.</p>
+                    </div>
+                </a>
                 <!-- 3. Cars -->
-                <div class="card text-center"
-                    style="padding: 2rem; background: var(--bg-light); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); transition: transform 0.3s;">
-                    <i class="fas fa-car" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">سيارات</h3>
-                    <p style="color: var(--text-light); font-size: 0.9rem;">أسطول متنوع من السيارات الفاخرة.</p>
-                </div>
+                <a href="{{ route('cars.index') }}">
+                    <div class="card text-center"
+                        style="padding: 2rem; background: var(--bg-light); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); transition: transform 0.3s;">
+                        <i class="fas fa-car"
+                            style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">سيارات</h3>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">أسطول متنوع من السيارات الفاخرة.</p>
+                    </div>
 
 
-                <!-- 5. Airport Services -->
-                <div class="card text-center"
-                    style="padding: 2rem; background: var(--bg-light); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); transition: transform 0.3s;">
-                    <i class="fas fa-luggage-cart"
-                        style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">خدمات مطار</h3>
-                    <p style="color: var(--text-light); font-size: 0.9rem;">تسهيل إجراءات السفر والوصول وحجز تذاكر الطيران.
-                    </p>
-                </div>
+                    <!-- 5. Airport Services -->
+                    <a href="{{ route('services.index') }}">
+                        <div class="card text-center"
+                            style="padding: 2rem; background: var(--bg-light); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); transition: transform 0.3s;">
+                            <i class="fas fa-luggage-cart"
+                                style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                            <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">خدمات مطار</h3>
+                            <p style="color: var(--text-light); font-size: 0.9rem;">تسهيل إجراءات السفر والوصول وحجز تذاكر
+                                الطيران.
+                            </p>
+                        </div>
+                    </a>
 
 
             </div>
@@ -89,7 +96,7 @@
     </section>
 
     <!-- Stats Section -->
-    <section class="section-padding" style="background-color: var(--bg-secondary);">
+    {{-- <section class="section-padding" style="background-color: var(--bg-secondary);">
         <div class="container">
             <div class="grid grid-cols-3 gap-4 text-center">
                 <div>
@@ -106,7 +113,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     @if (count($featuredItems) > 0)
         {{-- Featured Items --}}
