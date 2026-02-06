@@ -348,7 +348,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
 
     <script>
-        // Swiper Config
+        // Swiper  Config
         new Swiper(".mainSwiper", {
             navigation: {
                 nextEl: ".swiper-button-next",
