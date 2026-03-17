@@ -13,12 +13,11 @@
         "astrotomic/laravel-translatable": "^11.16",
         "bezhansalleh/filament-language-switch": "^4.1",
         "doriiaan/filament-astrotomic": "^1.1",
-        "filament/filament": "4.0",
+        "filament/filament": "5.3",
         "filament/spatie-laravel-settings-plugin": "^5.3",
         "hugomyb/filament-media-action": "^5.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "mokhosh/filament-rating": "*",
         "spatie/laravel-sluggable": "^3.8"
     },
     "require-dev": {
