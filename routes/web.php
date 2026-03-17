@@ -107,3 +107,7 @@ Route::middleware('auth:client')->group(function () {
     // Future: dashboard, profile, bookings, etc.
     // Route::get('/profile', [...])->name('profile');
 });
+
+
+Route::view('/follow-us', 'follow-us')->name('follow-us');
+Route::view('/maintenance', 'maintenance')->name('maintenance');
