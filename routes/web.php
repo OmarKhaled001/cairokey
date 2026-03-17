@@ -1,21 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ApartmentController;
+use App\Http\Controllers\Auth\ClientAuthController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\ServiceController;
-use App\Http\Controllers\ApartmentController;
-use App\Http\Controllers\Auth\ClientAuthController;
+use Illuminate\Support\Facades\Route;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 /*
 |--------------------------------------------------------------------------
 | Public Pages
 |--------------------------------------------------------------------------
 */
-Route::get('lang/{locale}', [App\Http\Controllers\LanguageController::class, 'switch'])
-    ->name('lang.switch')
-    ->where('locale', 'ar|en');
+Route::group(['prefix' => LaravelLocalization::setLocale()], function()
+{
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -111,3 +111,4 @@ Route::middleware('auth:client')->group(function () {
 
 Route::view('/follow-us', 'follow-us')->name('follow-us');
 Route::view('/maintenance', 'maintenance')->name('maintenance');
+});
