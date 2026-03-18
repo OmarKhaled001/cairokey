@@ -24,7 +24,7 @@
             <div class="mobile-menu-header">
                 <a href="{{ route('home') }}" class="mobile-logo">
                     @if ($logo)
-                        <img src="{{ asset('storage/' . $logo) }}" alt="{{ $siteName }}">
+                        <img src="{{ asset('storage/' . $logo) }}" alt="{{ $siteName }}" >
                     @else
                         <span>{{ $siteName }}</span>
                     @endif
