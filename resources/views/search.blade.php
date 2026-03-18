@@ -3,7 +3,7 @@
 @section('name', 'نتائج البحث - كايرو كي')
 
 @push('styles')
-    
+
 @endpush
 
 @section('content')
