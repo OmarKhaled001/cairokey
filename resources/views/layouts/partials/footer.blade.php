@@ -3,12 +3,17 @@
     $logo     = setting('logo_light');
     $isSvg    = $logo && str_ends_with(strtolower($logo), '.svg');
 
+    // ضفنا الواتساب هنا مع تحقق بسيط للرابط
+    $whatsappNum = setting('whatsapp', '01000000000');
+    $whatsappUrl = str_starts_with($whatsappNum, 'http') ? $whatsappNum : "https://wa.me/" . preg_replace('/[^0-9]/', '', $whatsappNum);
+
     $socials = [
         ['icon' => 'fa-facebook-f', 'url' => setting('facebook'),  'name' => 'facebook'],
         ['icon' => 'fa-instagram',  'url' => setting('instagram'), 'name' => 'instagram'],
         ['icon' => 'fa-snapchat',   'url' => setting('snapchat'),  'name' => 'snapchat'],
         ['icon' => 'fa-tiktok',     'url' => setting('tiktok'),    'name' => 'tiktok'],
         ['icon' => 'fa-youtube',    'url' => setting('youtube'),   'name' => 'youtube'],
+        ['icon' => 'fa-whatsapp',   'url' => $whatsappUrl,         'name' => 'whatsapp'],
     ];
 @endphp
 
@@ -29,7 +34,8 @@
             <div class="footer-section social-area">
                 <div class="social-links">
                     @foreach ($socials as $social)
-                        @if ($social['url'])
+                        {{-- التحقق هنا بيضمن إن الأيقونة مش هتظهر لو الـ url فاضي أو null --}}
+                        @if (!empty($social['url']))
                             <a href="{{ $social['url'] }}"
                                target="_blank"
                                rel="noopener"

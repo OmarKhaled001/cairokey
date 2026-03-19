@@ -44,7 +44,7 @@ class SettingsSeeder extends Seeder
             /* ── Contact ── */
             'email'    => 'info@cairokey.com',
             'phone'    => '+20 100 000 0000',
-            'whatsapp' => 'https://wa.me/201000000000',
+            'whatsapp' => '01000000000',
             'address'  => ['en' => 'Cairo, Egypt', 'ar' => 'القاهرة، مصر'],
 
             /* ── Social Media ── */
