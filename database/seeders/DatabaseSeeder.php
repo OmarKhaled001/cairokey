@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
 
        User::create([
             'name' => 'Admin',
-            'email' => 'admin@cairokey.com',
-            'password' => Hash::make('admin@cairokey.com'),
+            'email' => 'admin@cairokey.net',
+            'password' => Hash::make('cairo123'),
         ]);
 
         $this->call(SettingsSeeder::class);
