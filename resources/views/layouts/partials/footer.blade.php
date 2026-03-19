@@ -10,9 +10,7 @@
     $socials = [
         ['icon' => 'fa-facebook-f', 'url' => setting('facebook'),  'name' => 'facebook'],
         ['icon' => 'fa-instagram',  'url' => setting('instagram'), 'name' => 'instagram'],
-        ['icon' => 'fa-snapchat',   'url' => setting('snapchat'),  'name' => 'snapchat'],
         ['icon' => 'fa-tiktok',     'url' => setting('tiktok'),    'name' => 'tiktok'],
-        ['icon' => 'fa-youtube',    'url' => setting('youtube'),   'name' => 'youtube'],
         ['icon' => 'fa-whatsapp',   'url' => $whatsappUrl,         'name' => 'whatsapp'],
     ];
 @endphp
