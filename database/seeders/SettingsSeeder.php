@@ -10,8 +10,7 @@ class SettingsSeeder extends Seeder
 {
     public function run(): void
     {
-        // مسح الإعدادات القديمة عشان نبدأ على نظافة
-        DB::table('settings')->truncate();
+        // DB::table('settings')->truncate();
 
         $settings = [
 
@@ -49,12 +48,12 @@ class SettingsSeeder extends Seeder
             /* ── Contact ── */
             'email'    => 'info@cairokey.com',
             'phone'    => '+20 112 399 1452',
-            'whatsapp' => '01123991452',
+            'whatsapp' => '+201123991452',
             'address'  => ['en' => 'Cairo, Egypt', 'ar' => 'القاهرة، مصر'],
 
             /* ── Social Media ── */
             'facebook'  => 'https://www.facebook.com/share/18SCdYG7TJ/',
-            'instagram' => 'https://instagram.com/cairokey',
+            'instagram' => 'https://www.instagram.com/cairokey2026',
             'tiktok'    => 'https://www.tiktok.com/@cairokey2026?_r=1&_t=ZS-94iaFkAus9X',
         ];
 
