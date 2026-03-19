@@ -4,23 +4,28 @@ namespace Database\Seeders;
 
 use App\Models\Setting;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class SettingsSeeder extends Seeder
 {
     public function run(): void
     {
+        // مسح الإعدادات القديمة عشان نبدأ على نظافة
+        DB::table('settings')->truncate();
+
         $settings = [
 
             /* ── General ── */
-            'name'    => ['en' => 'Cairo Key',           'ar' => 'كايرو كي'],
-            'logo'    => 'settings/logo.png',
-            'favicon' => 'settings/favicon.png',
+            'name'         => ['en' => 'Cairo Key', 'ar' => 'كايرو كي'],
+            'logo'         => 'assets/images/logo.svg',
+            'logo_light'   => 'assets/images/logo-w.svg',
+            'favicon'      => 'assets/images/favico.svg',
 
             /* ── Hero ── */
-            'hero_cover'        => 'settings/hero.png',
+            'hero_cover'        => 'assets/images/cover.png',
             'hero_title'        => [
-                'en' => 'Explore the Beauty of Egypt with Cairo Key',
-                'ar' => 'استكشف جمال مصر مع كايرو كي',
+                'en' => 'Explore the Beauty of Egypt with CairoKey',
+                'ar' => 'استكشف جمال مصر مع كايروكي',
             ],
             'hero_description'  => [
                 'en' => 'Enjoy an unforgettable tourist experience with Cairo Key, the leading company in furnished apartments, hotels, car rentals, and airport services.',
@@ -43,20 +48,18 @@ class SettingsSeeder extends Seeder
 
             /* ── Contact ── */
             'email'    => 'info@cairokey.com',
-            'phone'    => '+20 100 000 0000',
-            'whatsapp' => '01000000000',
+            'phone'    => '+20 112 399 1452',
+            'whatsapp' => '01123991452',
             'address'  => ['en' => 'Cairo, Egypt', 'ar' => 'القاهرة، مصر'],
 
             /* ── Social Media ── */
-            'facebook'  => 'https://facebook.com/cairokey',
+            'facebook'  => 'https://www.facebook.com/share/18SCdYG7TJ/',
             'instagram' => 'https://instagram.com/cairokey',
-            'snapchat'  => 'https://snapchat.com/add/cairokey',
-            'tiktok'    => 'https://tiktok.com/@cairokey',
-            'youtube'   => 'https://youtube.com/@cairokey',
+            'tiktok'    => 'https://www.tiktok.com/@cairokey2026?_r=1&_t=ZS-94iaFkAus9X',
         ];
 
         Setting::setMany($settings);
 
-        $this->command->info('✅ Settings seeded successfully!');
+        $this->command->info('✅ Settings updated & Defaults cleared successfully!');
     }
 }
