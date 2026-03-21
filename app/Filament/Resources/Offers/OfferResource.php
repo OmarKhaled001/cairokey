@@ -41,7 +41,11 @@ class OfferResource extends Resource
     {
         return __('Asset Management');
     }
-
+public static function shouldRegisterNavigation(): bool
+{
+    // Hide from navigation for specific users
+    return false;
+}
     public static function getTranslatableLocales(): array
     {
         return ['ar', 'en'];
