@@ -182,17 +182,48 @@ return [
     'featured' => 'مميز',
     'currency' => 'ج.م',
 
-    'search' => 'بحث',
-    'search_placeholder' => 'ابحث عن وجهتك القادمة...',
-    'search_apartments' => 'ابحث عن شقق مفروشة فاخرة',
-    'search_hotels' => 'ابحث عن أفضل الفنادق في القاهرة',
-    'search_cars' => 'ابحث عن سيارات للإيجار',
-
- 'results_title' => 'نتائج البحث',
-    'results_showing' => 'أظهرت النتائج',
-    'result_label' => 'نتيجة',
-    'no_results_title' => 'لا توجد نتائج!',
-    'no_results_message' => 'لم نجد أي نتائج تطابق ',
-    'try_other_keywords' => '، جرب كلمات أخرى.',
+    '
+    // Search Page
+    'search_results_title' => 'نتائج البحث',
+    'search_results_showing' => 'أظهرت النتائج',
+    'search_result_label' => 'نتيجة',
+    'search_no_results_title' => 'لا توجد نتائج!',
+    'search_no_results_message' => 'لم نجد أي نتائج تطابق',
+    'search_try_other_keywords' => '، جرب كلمات أخرى',
+    
+    // Apartment
+    'apartment_label' => 'شقة',
+    'apartment_per_night' => '/ ليلة',
+    'apartment_featured_stay' => 'إقامة مميزة',
+    'apartment_about' => 'عن هذه الشقة',
+    'apartment_amenities' => 'المرافق والخدمات',
+    'apartment_bedrooms' => 'غرف نوم',
+    
+    // Car
+    'car_label' => 'سيارة',
+    'car_per_day' => '/ يوم',
+    
+    // Hotel
+    'hotel_label' => 'فندق',
+    'hotel_per_night' => '/ ليلة',
+    
+    // Service
+    'service_label' => 'خدمة',
+    
+    // Booking
+    'booking_avg_night' => 'متوسط الليلة',
+    
+    // WhatsApp
+    'whatsapp_contact_instant' => 'تواصل للحجز الفوري',
+    'whatsapp_booking_inquiry' => 'مرحباً كايرو كي، أرغب في الاستفسار عن حجز',
+    
+    // General UI
+    'view_details' => 'عرض التفاصيل',
+    'back_to_home' => 'العودة للرئيسية',
+    'price_range_separator' => '—',
+    
+    // Related Apartments
+    'you_may_like' => 'شقق قد تعجبك',
+    'explore_more' => 'استكشف المزيد من خيارات الإقامة المميزة في كايرو كي',
 
 ];
