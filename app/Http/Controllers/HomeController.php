@@ -1,3 +1,4 @@
+
 <?php
 
 namespace App\Http\Controllers;
@@ -11,6 +12,25 @@ use App\Models\Offer;
 
 class HomeController extends Controller
 {
+    // ─── الـ models اللي بنبحث فيها ────────────────────────────────────────────
+    private array $searchableModels = [
+        Apartment::class => 'apartment',
+        Car::class       => 'car',
+        Hotel::class     => 'hotel',
+        Service::class   => 'service',
+    ];
+
+    // ─── كلمات يتجاهلها البحث (عربي + إنجليزي) ─────────────────────────────────
+    private array $stopWords = [
+        'عايز','عاوز','أريد','اريد','ابغى','أبغى','بدي','محتاج','محتاجة',
+        'في','من','على','الى','إلى','عن','مع','هل','هناك','فيه','ايه','إيه',
+        'احسن','أحسن','افضل','أفضل','كويس','رخيص','قريب','ممكن','عندك',
+        'i','want','need','find','looking','for','a','an','the','in',
+        'near','best','good','cheap','any','show','me','some',
+    ];
+
+    // ─────────────────────────────────────────────────────────────────────────────
+
     public function index()
     {
         $featuredItems = collect()
@@ -27,119 +47,137 @@ class HomeController extends Controller
         $cars       = Car::active()->withTranslation()->latest()->take(3)->get();
         $hotels     = Hotel::active()->withTranslation()->latest()->take(3)->get();
 
-        return view('home', compact('featuredItems', 'offers', 'services', 'apartments', 'cars', 'hotels'));
+        return view('home', compact(
+            'featuredItems', 'offers', 'services', 'apartments', 'cars', 'hotels'
+        ));
     }
+
+    // ─────────────────────────────────────────────────────────────────────────────
 
     public function search(Request $request)
     {
-        // ✅ Fix 1: validate + trim + null guard
         $query = trim($request->input('search', ''));
 
         if (blank($query)) {
             return view('search', ['searchResults' => collect(), 'query' => '']);
         }
 
-        $apartments = $this->searchInModel(Apartment::class, $query, 'apartment');
-        $cars       = $this->searchInModel(Car::class,       $query, 'car');
-        $hotels     = $this->searchInModel(Hotel::class,     $query, 'hotel');
-        $services   = $this->searchInModel(Service::class,   $query, 'service');
-
-        $searchResults = collect()
-            ->merge($apartments)
-            ->merge($cars)
-            ->merge($hotels)
-            ->merge($services)
-            ->sortByDesc('search_score') // ✅ Fix 2: sort the final merged collection
+        $searchResults = collect($this->searchableModels)
+            ->flatMap(fn($type, $model) => $this->searchInModel($model, $query, $type))
+            ->sortByDesc('search_score')
             ->values();
 
         return view('search', compact('searchResults', 'query'));
     }
 
+    // ─────────────────────────────────────────────────────────────────────────────
+
     private function searchInModel(string $model, string $query, string $type)
     {
-        // ✅ Fix 3: normalize Arabic + remove diacritics
-        $normalized = $this->normalizeArabic($query);
+        $normalized = $this->normalize($query);
+        $keywords   = $this->extractKeywords($normalized);
 
-        // ✅ Fix 4: filter empty words properly (was breaking on blank query)
-        $words = collect(preg_split('/[\s،,]+/u', $normalized))
-            ->filter(fn($w) => mb_strlen(trim($w)) > 1)
-            ->unique()
-            ->values()
-            ->toArray();
-
-        if (empty($words)) {
+        if (empty($keywords)) {
             return collect();
         }
 
         $instance = new $model;
         $hasCity  = in_array('city', $instance->translatedAttributes ?? []);
 
-        $results = $model::active()
+        return $model::active()
             ->withTranslation()
-            ->whereHas('translations', function ($q) use ($words, $normalized, $hasCity) {
-                $q->where('locale', app()->getLocale())
-                  ->where(function ($sub) use ($words, $normalized, $hasCity) {
-
-                      // ✅ Fix 5: search full normalized query first (exact phrase)
-                      $sub->orWhere('name', 'like', "%{$normalized}%")
-                          ->orWhere('tags', 'like', "%{$normalized}%");
-
-                      if ($hasCity) {
-                          $sub->orWhere('city', 'like', "%{$normalized}%");
-                      }
-
-                      // then each word separately
-                      foreach ($words as $word) {
-                          $sub->orWhere('name', 'like', "%{$word}%")
-                              ->orWhere('tags', 'like', "%{$word}%");
-
-                          if ($hasCity) {
-                              $sub->orWhere('city', 'like', "%{$word}%");
-                          }
-                      }
-                  });
+            ->whereHas('translations', function ($q) use ($keywords, $normalized, $hasCity) {
+                $q->where(function ($sub) use ($keywords, $normalized, $hasCity) {
+                    // بحث في اللغتين عربي + إنجليزي
+                    foreach (['ar', 'en'] as $locale) {
+                        $sub->orWhere(function ($loc) use ($locale, $keywords, $normalized, $hasCity) {
+                            $loc->where('locale', $locale)
+                                ->where(function ($w) use ($keywords, $normalized, $hasCity) {
+                                    // الجملة كاملة
+                                    $w->orWhere('name', 'like', "%{$normalized}%");
+                                    if ($hasCity) {
+                                        $w->orWhere('city', 'like', "%{$normalized}%");
+                                    }
+                                    // كل كلمة لوحدها
+                                    foreach ($keywords as $kw) {
+                                        $w->orWhere('name', 'like', "%{$kw}%")
+                                          ->orWhere('tags', 'like', "%{$kw}%");
+                                        if ($hasCity) {
+                                            $w->orWhere('city', 'like', "%{$kw}%");
+                                        }
+                                    }
+                                });
+                        });
+                    }
+                });
             })
-            ->get();
-
-        // ✅ Fix 6: score null-safe with fallback to empty string
-        return $results->map(function ($item) use ($query, $normalized, $words, $type) {
-            $score = 0;
-
-            $name = mb_strtolower((string) ($item->name ?? ''));
-            $tags = mb_strtolower((string) ($item->tags ?? ''));
-            $city = mb_strtolower((string) ($item->city ?? ''));
-            $hay  = $name . ' ' . $tags . ' ' . $city;
-
-            $lowerNorm = mb_strtolower($normalized);
-
-            if ($name === $lowerNorm)                    $score += 100; // exact name match
-            if (str_contains($name, $lowerNorm))         $score += 50;  // phrase in name
-            if (str_contains($tags, $lowerNorm))         $score += 30;  // phrase in tags
-            if (str_contains($city, $lowerNorm))         $score += 20;  // phrase in city
-
-            foreach ($words as $word) {
-                $w = mb_strtolower($word);
-                if (str_contains($name, $w)) $score += 10;
-                if (str_contains($tags, $w)) $score += 5;
-                if (str_contains($city, $w)) $score += 5;
-            }
-
-            $item->setAttribute('search_score', $score);
-            $item->setAttribute('search_type',  $type);
-            $item->setAttribute('search_query', $query); // ✅ مفيد في الـ view
-            return $item;
-        })
-        ->sortByDesc('search_score')
-        ->values();
+            ->get()
+            ->map(fn($item) => $this->attachScore($item, $normalized, $keywords, $type));
     }
 
-    private function normalizeArabic(string $text): string
+    // ─── Scoring ─────────────────────────────────────────────────────────────────
+
+    private function attachScore($item, string $normalized, array $keywords, string $type)
+    {
+        $name = $this->normalize((string) ($item->name ?? ''));
+        $city = $this->normalize((string) ($item->city ?? ''));
+        $tags = $this->normalize($this->tagsToString($item->tags));
+
+        $score = 0;
+
+        // exact full match → أعلى score
+        if ($name === $normalized)              $score += 100;
+        if (str_contains($name, $normalized))   $score += 50;
+        if (str_contains($city, $normalized))   $score += 30;
+        if (str_contains($tags, $normalized))   $score += 20;
+
+        // كل keyword موجودة تزيد الـ score
+        foreach ($keywords as $kw) {
+            if (str_contains($name, $kw)) $score += 10;
+            if (str_contains($city, $kw)) $score += 5;
+            if (str_contains($tags, $kw)) $score += 3;
+        }
+
+        $item->setAttribute('search_score', $score);
+        $item->setAttribute('search_type',  $type);
+
+        return $item;
+    }
+
+    // ─── Helpers ─────────────────────────────────────────────────────────────────
+
+    /**
+     * توحيد النص: lowercase + توحيد الألف + حذف التشكيل
+     */
+    private function normalize(string $text): string
     {
         $text = mb_strtolower(trim($text));
-        // توحيد الألف
         $text = str_replace(['أ','إ','آ','ٱ'], 'ا', $text);
-        // حذف التشكيل
         $text = preg_replace('/[\x{064B}-\x{065F}]/u', '', $text);
         return $text;
     }
-}
+
+    /**
+     * استخراج الكلمات المفيدة بعد حذف الـ stop words
+     */
+    private function extractKeywords(string $normalized): array
+    {
+        $words = preg_split('/[\s،,]+/u', $normalized, -1, PREG_SPLIT_NO_EMPTY);
+
+        return collect($words)
+            ->filter(fn($w) => mb_strlen($w) > 1 && ! in_array($w, $this->stopWords))
+            ->unique()
+            ->values()
+            ->toArray();
+    }
+
+    /**
+     * tags ممكن تكون array (JSON cast) أو string
+     */
+    private function tagsToString(mixed $tags): string
+    {
+        if (is_array($tags)) {
+            return implode(' ', $tags);
+        }
+        return (string) ($tags ?? '');
+    }
