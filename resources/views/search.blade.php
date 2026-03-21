@@ -1,125 +1,137 @@
 @extends('layouts.master')
 
-@section('name', __('general.search_results_title') . ' - ' . __('general.site_name'))
-
-@push('styles')
-    {{-- Styles will be added here if needed --}}
-@endpush
+@section('title', __('general.search_results_title') . ' - ' . setting('name', 'Cairo Key'))
 
 @section('content')
 
+    {{-- ── Hero ── --}}
     <section class="hero-search">
         <div class="container text-center">
             <h1 style="font-weight: 800; font-size: 2.5rem; margin-bottom: 0.5rem;">
                 {{ __('general.search_results_title') }}
             </h1>
             <p style="opacity: 0.9;">
-                {{ __('general.search_results_showing') }} "{{ request('search') }}"
+                {{ __('general.search_results_showing') }}
+                "<strong>{{ $query }}</strong>"
             </p>
         </div>
     </section>
 
+    {{-- ── Results ── --}}
     <div class="container section-padding">
-        <div class="main-layout">
-            <main>
-                @if ($searchResults->count() > 0)
-                    <div class="grid main-search-grid"
-                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
-                        @foreach ($searchResults as $item)
-                            @php
-                                $route = '#';
-                                $label = __('general.search_result_label');
-                                $priceLabel = '';
-                                $priceValue = 0;
-                                $locationText = '';
 
-                                if ($item instanceof \App\Models\Apartment) {
-                                    $route = route('apartments.show', $item->slug);
-                                    $label = __('general.apartment_label');
-                                    $priceValue = $item->price_per_night;
-                                    $priceLabel = __('general.apartment_per_night');
-                                    $locationText = $item->city ?? __('general.site_name');
-                                } elseif ($item instanceof \App\Models\Car) {
-                                    $route = route('cars.show', $item->slug);
-                                    $label = __('general.car_label');
-                                    $priceValue = $item->price_per_day;
-                                    $priceLabel = __('general.car_per_day');
-                                    $locationText = $item->brand ?? __('general.site_name');
-                                } elseif ($item instanceof \App\Models\Hotel) {
-                                    $route = route('hotels.show', $item->slug);
-                                    $label = __('general.hotel_label');
-                                    $priceValue = $item->price_per_night;
-                                    $priceLabel = __('general.hotel_per_night');
-                                    $locationText = $item->city ?? __('general.site_name');
-                                } elseif ($item instanceof \App\Models\Service) {
-                                    $route = route('services.show', $item->slug);
-                                    $label = __('general.service_label');
-                                    $priceValue = $item->price;
-                                    $priceLabel = '';
-                                    $locationText = $item->city ?? __('general.site_name');
-                                }
-                            @endphp
+        @if ($searchResults->isNotEmpty())
 
-                            <div class="search-card">
-                                <div class="card-image-wrapper"
-                                    style="background-image: url('{{ $item->cover ? asset('storage/' . $item->cover) : 'https://placehold.co/600x400?text=Image' }}');">
-                                    <span class="type-badge">{{ $label }}</span>
-                                </div>
+            <div class="grid grid-cols-3">
+                @foreach ($searchResults as $item)
 
-                                <div style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
-                                    <a href="{{ $route }}">
-                                        <h3 style="font-weight: 800; font-size: 1.2rem; margin-bottom: 0.5rem;">
-                                            {{ $item->name }}
-                                        </h3>
-                                    </a>
+                    @php
+                        $meta = match($item->search_type) {
+                            'apartment' => [
+                                'label'    => __('general.apartment_label'),
+                                'price'    => $item->price_per_night ?? null,
+                                'unit'     => __('general.apartment_per_night'),
+                                'location' => $item->city ?? '',
+                            ],
+                            'hotel' => [
+                                'label'    => __('general.hotel_label'),
+                                'price'    => $item->price_per_night ?? null,
+                                'unit'     => __('general.hotel_per_night'),
+                                'location' => $item->city ?? '',
+                            ],
+                            'car' => [
+                                'label'    => __('general.car_label'),
+                                'price'    => $item->price_per_day ?? null,
+                                'unit'     => __('general.car_per_day'),
+                                'location' => $item->brand ?? '',
+                            ],
+                            'service' => [
+                                'label'    => __('general.service_label'),
+                                'price'    => $item->price ?? null,
+                                'unit'     => '',
+                                'location' => $item->city ?? '',
+                            ],
+                            default => [
+                                'label'    => ucfirst($item->search_type ?? ''),
+                                'price'    => null,
+                                'unit'     => '',
+                                'location' => '',
+                            ],
+                        };
+                    @endphp
 
-                                    <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1rem;">
-                                        <i class="fas fa-map-marker-alt ml-1"></i>
-                                        {{ $locationText }}
-                                    </p>
+                    <div class="search-card">
 
-                                    @if($priceValue > 0)
-                                    <div class="price-tag" style="margin-bottom: 1rem;">
-                                        <span style="font-weight: 700; font-size: 1.1rem; color: var(--primary-color);">
-                                            ${{ number_format($priceValue, 0) }}
-                                        </span>
-                                        @if($priceLabel)
-                                            <span style="font-size: 0.85rem; color: #64748b;">
-                                                {{ $priceLabel }}
-                                            </span>
-                                        @endif
-                                    </div>
-                                    @endif
-
-                                    <div class="d-flex justify-center align-center" style="margin-top: 1rem;">
-                                        <a href="{{ $route }}" class="btn btn-primary" style="padding: 0.5rem 1rem;">
-                                            {{ __('general.view_details') }}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    {{-- Pagination --}}
-                    @if (method_exists($searchResults, 'links'))
-                        <div class="pagination-wrapper mt-5">
-                            {{ $searchResults->appends(request()->all())->links() }}
+                        {{-- Image --}}
+                        <div class="card-image-wrapper"
+                             style="background-image: url('{{ $item->cover ? asset('storage/' . $item->cover) : 'https://placehold.co/600x400?text=Image' }}');">
+                            <span class="type-badge">{{ $meta['label'] }}</span>
                         </div>
-                    @endif
-                @else
-                    <div style="text-align: center; padding: 5rem 2rem;">
-                        <i class="fas fa-search-minus" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
-                        <h2 style="font-weight: 800;">{{ __('general.search_no_results_title') }}</h2>
-                        <p class="text-muted">
-                            {{ __('general.search_no_results_message') }} "{{ request('search') }}"{{ __('general.search_try_other_keywords') }}
-                        </p>
-                        <a href="{{ url('/') }}" class="btn btn-primary mt-3" style="border-radius: 12px;">
-                            {{ __('general.back_to_home') }}
-                        </a>
+
+                        {{-- Body --}}
+                        <div class="card-body" style="display:flex; flex-direction:column; flex-grow:1;">
+
+                            <a href="{{ $item->detailRoute() }}">
+                                <h3 style="font-weight:800; font-size:1.2rem; margin-bottom:0.5rem;">
+                                    {{ $item->name }}
+                                </h3>
+                            </a>
+
+                            @if ($meta['location'])
+                                <p style="color:var(--text-light); font-size:0.9rem; margin-bottom:0.75rem;">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ $meta['location'] }}
+                                </p>
+                            @endif
+
+                            @if (($meta['price'] ?? 0) > 0)
+                                <p style="font-weight:700; font-size:1.1rem; color:var(--primary-color); margin-bottom:0.5rem;">
+                                    {{ number_format($meta['price'], 0) }} {{ __('general.currency') }}
+                                    @if ($meta['unit'])
+                                        <span style="font-size:0.85rem; color:var(--text-light); font-weight:400;">
+                                            {{ $meta['unit'] }}
+                                        </span>
+                                    @endif
+                                </p>
+                            @endif
+
+                            <div style="margin-top:auto; padding-top:1rem;">
+                                <a href="{{ $item->detailRoute() }}" class="btn btn-primary"
+                                   style="padding:0.5rem 1rem;">
+                                    {{ __('general.view_details') }}
+                                </a>
+                            </div>
+
+                        </div>
                     </div>
-                @endif
-            </main>
-        </div>
+
+                @endforeach
+            </div>
+
+            @if (method_exists($searchResults, 'links'))
+                <div class="pagination-wrapper" style="margin-top:2rem;">
+                    {{ $searchResults->appends(request()->all())->links() }}
+                </div>
+            @endif
+
+        @else
+
+            <div class="empty-state text-center" style="padding:5rem 2rem;">
+                <i class="fas fa-search-minus"
+                   style="font-size:4rem; color:var(--border-color); margin-bottom:1.5rem; display:block;"></i>
+                <h2 style="font-weight:800;">{{ __('general.search_no_results_title') }}</h2>
+                <p style="color:var(--text-light); margin:1rem 0 2rem;">
+                    {{ __('general.search_no_results_message') }}
+                    "<strong>{{ $query }}</strong>"
+                    {{ __('general.search_try_other_keywords') }}
+                </p>
+                <a href="{{ route('home') }}" class="btn btn-primary">
+                    {{ __('general.back_to_home') }}
+                </a>
+            </div>
+
+        @endif
+
     </div>
+
 @endsection
