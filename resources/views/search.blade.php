@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('name', __('search.results_title') . ' - ' . __('general.site_name'))
+@section('name', __('general.search_results_title') . ' - ' . __('general.site_name'))
 
 @push('styles')
     {{-- Styles will be added here if needed --}}
@@ -11,10 +11,10 @@
     <section class="hero-search">
         <div class="container text-center">
             <h1 style="font-weight: 800; font-size: 2.5rem; margin-bottom: 0.5rem;">
-                {{ __('search.results_title') }}
+                {{ __('general.search_results_title') }}
             </h1>
             <p style="opacity: 0.9;">
-                {{ __('search.results_showing') }} "{{ request('search') }}"
+                {{ __('general.search_results_showing') }} "{{ request('search') }}"
             </p>
         </div>
     </section>
@@ -27,34 +27,33 @@
                         style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
                         @foreach ($searchResults as $item)
                             @php
-                                // تحديد البيانات والروابط ديناميكياً بناءً على نوع الموديل
                                 $route = '#';
-                                $label = __('search.result_label');
+                                $label = __('general.search_result_label');
                                 $priceLabel = '';
                                 $priceValue = 0;
                                 $locationText = '';
 
                                 if ($item instanceof \App\Models\Apartment) {
                                     $route = route('apartments.show', $item->slug);
-                                    $label = __('apartments.label');
+                                    $label = __('general.apartment_label');
                                     $priceValue = $item->price_per_night;
-                                    $priceLabel = __('apartments.per_night');
+                                    $priceLabel = __('general.apartment_per_night');
                                     $locationText = $item->city ?? __('general.site_name');
                                 } elseif ($item instanceof \App\Models\Car) {
                                     $route = route('cars.show', $item->slug);
-                                    $label = __('cars.label');
+                                    $label = __('general.car_label');
                                     $priceValue = $item->price_per_day;
-                                    $priceLabel = __('cars.per_day');
+                                    $priceLabel = __('general.car_per_day');
                                     $locationText = $item->brand ?? __('general.site_name');
                                 } elseif ($item instanceof \App\Models\Hotel) {
                                     $route = route('hotels.show', $item->slug);
-                                    $label = __('hotels.label');
+                                    $label = __('general.hotel_label');
                                     $priceValue = $item->price_per_night;
-                                    $priceLabel = __('hotels.per_night');
+                                    $priceLabel = __('general.hotel_per_night');
                                     $locationText = $item->city ?? __('general.site_name');
                                 } elseif ($item instanceof \App\Models\Service) {
                                     $route = route('services.show', $item->slug);
-                                    $label = __('services.label');
+                                    $label = __('general.service_label');
                                     $priceValue = $item->price;
                                     $priceLabel = '';
                                     $locationText = $item->city ?? __('general.site_name');
@@ -111,9 +110,9 @@
                 @else
                     <div style="text-align: center; padding: 5rem 2rem;">
                         <i class="fas fa-search-minus" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1.5rem;"></i>
-                        <h2 style="font-weight: 800;">{{ __('search.no_results_title') }}</h2>
+                        <h2 style="font-weight: 800;">{{ __('general.search_no_results_title') }}</h2>
                         <p class="text-muted">
-                            {{ __('search.no_results_message') }} "{{ request('search') }}"{{ __('search.try_other_keywords') }}
+                            {{ __('general.search_no_results_message') }} "{{ request('search') }}"{{ __('general.search_try_other_keywords') }}
                         </p>
                         <a href="{{ url('/') }}" class="btn btn-primary mt-3" style="border-radius: 12px;">
                             {{ __('general.back_to_home') }}
