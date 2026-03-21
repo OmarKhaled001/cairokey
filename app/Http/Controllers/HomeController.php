@@ -9,158 +9,174 @@ use App\Models\Offer;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    private const FEATURED_LIMIT = 6;
-    private const DISPLAY_LIMIT  = 3;
-
-    private const SEARCHABLE_MODELS = [
+    /* ──────────────────────────────────────────────
+     | Models included in search & featured queries
+     ─────────────────────────────────────────────── */
+    private const SEARCHABLE = [
         'apartment' => Apartment::class,
         'car'       => Car::class,
         'hotel'     => Hotel::class,
         'service'   => Service::class,
     ];
 
-    public function index(): View
+    /* ══════════════════════════════════════════════
+     |  HOME
+     ══════════════════════════════════════════════ */
+    public function index()
     {
-        $featuredItems = $this->getFeaturedItems();
-        $offers        = Offer::latest()->take(self::DISPLAY_LIMIT)->get();
-
-        $latest = [
-            'services'   => Service::active()->withTranslation()->latest()->take(self::DISPLAY_LIMIT)->get(),
-            'apartments' => Apartment::active()->withTranslation()->latest()->take(self::DISPLAY_LIMIT)->get(),
-            'cars'       => Car::active()->withTranslation()->latest()->take(self::DISPLAY_LIMIT)->get(),
-            'hotels'     => Hotel::active()->withTranslation()->latest()->take(self::DISPLAY_LIMIT)->get(),
-        ];
-
-        return view('home', [
-            'featuredItems' => $featuredItems,
-            'offers'        => $offers,
-            ...$latest,
-        ]);
-    }
-
-    public function search(Request $request): View
-    {
-        $query = trim($request->input('search', ''));
-
-        if ($query === '') {
-            return view('search', ['searchResults' => collect()]);
-        }
-
-        $results = collect();
-
-        foreach (self::SEARCHABLE_MODELS as $type => $model) {
-            $results = $results->merge(
-                $this->searchInModel($model, $query, $type)
-            );
-        }
-
-        $sortedResults = $results
-            ->sortByDesc('search_score')
-            ->values();
-
-        return view('search', [
-            'searchResults' => $sortedResults,
-        ]);
-    }
-
-    /**
-     * Get merged and sorted featured items (max 3 displayed)
-     */
-    private function getFeaturedItems(): Collection
-    {
-        return collect([
-            Service::class,
-            Apartment::class,
-            Car::class,
-            Hotel::class,
-        ])
-            ->flatMap(fn(string $model) => $model::active()
+        $featuredItems = collect(self::SEARCHABLE)
+            ->flatMap(fn($model) => $model::active()
                 ->withTranslation()
                 ->where('featured', true)
                 ->latest()
-                ->take(self::FEATURED_LIMIT)
+                ->take(6)
                 ->get()
             )
             ->sortByDesc('created_at')
-            ->take(self::DISPLAY_LIMIT);
+            ->take(3)
+            ->values();
+
+        return view('home', [
+            'featuredItems' => $featuredItems,
+            'offers'        => Offer::latest()->take(3)->get(),
+            'services'      => Service::active()->withTranslation()->latest()->take(3)->get(),
+            'apartments'    => Apartment::active()->withTranslation()->latest()->take(3)->get(),
+            'cars'          => Car::active()->withTranslation()->latest()->take(3)->get(),
+            'hotels'        => Hotel::active()->withTranslation()->latest()->take(3)->get(),
+        ]);
     }
 
-    /**
-     * Search inside one translatable model with basic relevance scoring
-     */
-    private function searchInModel(string $modelClass, string $query, string $type): Collection
+    /* ══════════════════════════════════════════════
+     |  SEARCH
+     ══════════════════════════════════════════════ */
+    public function search(Request $request)
     {
-        $words = $this->prepareSearchWords($query);
+        $raw = trim($request->input('search', ''));
 
-        if (empty($words)) {
-            return collect();
+        if (blank($raw)) {
+            return view('search', ['searchResults' => collect(), 'query' => '']);
         }
 
-        $items = $modelClass::active()
+        $normalized = $this->normalize($raw);
+        $words      = $this->tokenize($normalized);
+
+        if (empty($words)) {
+            return view('search', ['searchResults' => collect(), 'query' => $raw]);
+        }
+
+        $searchResults = collect(self::SEARCHABLE)
+            ->flatMap(fn($model, $type) => $this->searchModel($model, $type, $normalized, $words))
+            ->sortByDesc('search_score')
+            ->values();
+
+        return view('search', compact('searchResults') + ['query' => $raw]);
+    }
+
+    /* ──────────────────────────────────────────────
+     | Query one model and score its results
+     ─────────────────────────────────────────────── */
+    private function searchModel(
+        string $model,
+        string $type,
+        string $normalized,
+        array  $words
+    ): Collection {
+        $results = $model::active()
             ->withTranslation()
-            ->whereHas('translations', function ($q) use ($words) {
+            ->whereHas('translations', function ($q) use ($normalized, $words) {
                 $q->where('locale', app()->getLocale())
-                    ->where(function ($sub) use ($words) {
-                        foreach ($words as $word) {
-                            $sub->orWhere('name', 'like', "%{$word}%");
+                  ->where(function ($sub) use ($normalized, $words) {
+                      // Full phrase first
+                      $sub->where('name', 'like', "%{$normalized}%")
+                          ->orWhere('description', 'like', "%{$normalized}%");
 
-                            if (in_array('tags', (new $modelClass())->translatedAttributes ?? [])) {
-                                $sub->orWhere('tags', 'like', "%{$word}%");
-                            }
-
-                            if (in_array('city', (new $modelClass())->translatedAttributes ?? [])) {
-                                $sub->orWhere('city', 'like', "%{$word}%");
-                            }
-                        }
-                    });
+                      // Individual words
+                      foreach ($words as $word) {
+                          $sub->orWhere('name', 'like', "%{$word}%")
+                              ->orWhere('description', 'like', "%{$word}%");
+                      }
+                  });
             })
+            ->orWhere('city', 'like', "%{$normalized}%") // city is on the main table
             ->get();
 
-        return $items->map(function ($item) use ($query, $type) {
-            $score = $this->calculateRelevanceScore($item->name ?? '', $query);
-
-            $item->search_score = $score;
+        return $results->map(function ($item) use ($type, $normalized, $words) {
             $item->search_type  = $type;
-
+            $item->search_score = $this->score($item, $normalized, $words);
             return $item;
         });
     }
 
-    /**
-     * Split query into meaningful search words (min length 3 chars)
-     */
-    private function prepareSearchWords(string $query): array
+    /* ──────────────────────────────────────────────
+     | Score a single result (higher = more relevant)
+     ─────────────────────────────────────────────── */
+    private function score(mixed $item, string $normalized, array $words): int
     {
-        return collect(explode(' ', trim($query)))
-            ->map('mb_strtolower')
-            ->filter(fn(string $word) => mb_strlen($word) >= 3)
+        $name = $this->normalize((string) ($item->name        ?? ''));
+        $desc = $this->normalize((string) ($item->description ?? ''));
+        $city = $this->normalize((string) ($item->city        ?? ''));
+        $tags = $this->normalize(
+            is_array($item->tags) ? implode(' ', $item->tags) : (string) ($item->tags ?? '')
+        );
+
+        $score = 0;
+
+        // Exact / phrase matches (weighted by field importance)
+        if ($name === $normalized)              $score += 100;
+        if (str_contains($name, $normalized))   $score += 50;
+        if (str_contains($city, $normalized))   $score += 30;
+        if (str_contains($tags, $normalized))   $score += 25;
+        if (str_contains($desc, $normalized))   $score += 10;
+
+        // Per-word matches
+        foreach ($words as $word) {
+            if (str_contains($name, $word))     $score += 15;
+            if (str_contains($city, $word))     $score += 10;
+            if (str_contains($tags, $word))     $score += 8;
+            if (str_contains($desc, $word))     $score += 3;
+        }
+
+        // Boost featured items slightly
+        if ($item->featured)                    $score += 5;
+
+        return $score;
+    }
+
+    /* ──────────────────────────────────────────────
+     | Normalize Arabic text for comparison
+     ─────────────────────────────────────────────── */
+    private function normalize(string $text): string
+    {
+        $text = mb_strtolower(trim($text));
+
+        // Unify Alef variants → ا
+        $text = str_replace(['أ', 'إ', 'آ', 'ٱ'], 'ا', $text);
+
+        // Unify Yaa variants → ي
+        $text = str_replace(['ى', 'ئ'], 'ي', $text);
+
+        // Unify Taa Marbuta → ه
+        $text = str_replace('ة', 'ه', $text);
+
+        // Strip diacritics (tashkeel)
+        $text = preg_replace('/[\x{064B}-\x{065F}]/u', '', $text);
+
+        return $text;
+    }
+
+    /* ──────────────────────────────────────────────
+     | Split query into meaningful tokens
+     ─────────────────────────────────────────────── */
+    private function tokenize(string $normalized): array
+    {
+        return collect(preg_split('/[\s،,]+/u', $normalized))
+            ->map(fn($w) => trim($w))
+            ->filter(fn($w) => mb_strlen($w) > 1)
             ->unique()
             ->values()
             ->all();
-    }
-
-    /**
-     * Very simple relevance scoring
-     * You can extend this later (Levenshtein, word positions, TF-IDF lite, etc.)
-     */
-    private function calculateRelevanceScore(string $name, string $query): int
-    {
-        $lowerName  = mb_strtolower($name);
-        $lowerQuery = mb_strtolower($query);
-
-        if ($lowerName === $lowerQuery) {
-            return 100;
-        }
-
-        if (str_contains($lowerName, $lowerQuery)) {
-            return 50;
-        }
-
-        // You can add more rules here (partial word matches, etc.)
-        return 10;
     }
 }
