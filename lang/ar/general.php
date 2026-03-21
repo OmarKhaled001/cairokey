@@ -182,7 +182,6 @@ return [
     'featured' => 'مميز',
     'currency' => 'ج.م',
 
-    '
     // Search Page
     'search_results_title' => 'نتائج البحث',
     'search_results_showing' => 'أظهرت النتائج',
