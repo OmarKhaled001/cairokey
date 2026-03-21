@@ -187,5 +187,47 @@ return [
     'search_apartments' => 'Search for luxury furnished apartments',
     'search_hotels' => 'Search for best hotels in Cairo',
     'search_cars' => 'Search for car rentals',
-
+  
+    // Search Page
+    'search_results_title' => 'Search Results',
+    'search_results_showing' => 'Showing results for',
+    'search_result_label' => 'Result',
+    'search_no_results_title' => 'No Results Found!',
+    'search_no_results_message' => 'We couldn\'t find any results matching',
+    'search_try_other_keywords' => ', try other keywords',
+    
+    // Apartment
+    'apartment_label' => 'Apartment',
+    'apartment_per_night' => '/ night',
+    'apartment_featured_stay' => 'Featured Stay',
+    'apartment_about' => 'About this apartment',
+    'apartment_amenities' => 'Amenities & Services',
+    'apartment_bedrooms' => 'Bedrooms',
+    
+    // Car
+    'car_label' => 'Car',
+    'car_per_day' => '/ day',
+    
+    // Hotel
+    'hotel_label' => 'Hotel',
+    'hotel_per_night' => '/ night',
+    
+    // Service
+    'service_label' => 'Service',
+    
+    // Booking
+    'booking_avg_night' => 'Average Night',
+    
+    // WhatsApp
+    'whatsapp_contact_instant' => 'Contact for Instant Booking',
+    'whatsapp_booking_inquiry' => 'Hello Cairo Key, I would like to inquire about booking',
+    
+    // General UI
+    'view_details' => 'View Details',
+    'back_to_home' => 'Back to Home',
+    'price_range_separator' => '—',
+    
+    // Related Apartments
+    'you_may_like' => 'You May Also Like',
+    'explore_more' => 'Explore more premium stays at CairoKey
 ];
