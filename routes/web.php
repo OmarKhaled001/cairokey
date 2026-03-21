@@ -110,5 +110,5 @@ Route::middleware('auth:client')->group(function () {
 
 
 Route::view('/follow-us', 'follow-us')->name('follow-us');
-Route::view('/maintenance', 'maintenance')->name('maintenance');
+Route::view('*', 'maintenance')->name('maintenance');
 });
