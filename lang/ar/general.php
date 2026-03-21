@@ -1,4 +1,4 @@
-<?php
+8<?php
 
 return [
     'home' => 'الرئيسية',
@@ -187,4 +187,12 @@ return [
     'search_apartments' => 'ابحث عن شقق مفروشة فاخرة',
     'search_hotels' => 'ابحث عن أفضل الفنادق في القاهرة',
     'search_cars' => 'ابحث عن سيارات للإيجار',
+
+ 'results_title' => 'نتائج البحث',
+    'results_showing' => 'أظهرت النتائج',
+    'result_label' => 'نتيجة',
+    'no_results_title' => 'لا توجد نتائج!',
+    'no_results_message' => 'لم نجد أي نتائج تطابق ',
+    'try_other_keywords' => '، جرب كلمات أخرى.',
+
 ];
