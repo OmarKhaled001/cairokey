@@ -229,5 +229,5 @@ return [
     
     // Related Apartments
     'you_may_like' => 'You May Also Like',
-    'explore_more' => 'Explore more premium stays at CairoKey
+    'explore_more' => 'Explore more premium stays at CairoKey', 
 ];
