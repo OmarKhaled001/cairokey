@@ -8,7 +8,6 @@ use App\Models\Car;
 use App\Models\Hotel;
 use App\Models\Service;
 use App\Models\Offer;
-use Illuminate\Database\Eloquent\Collection;
 
 class HomeController extends Controller
 {
@@ -22,137 +21,125 @@ class HomeController extends Controller
             ->sortByDesc('created_at')
             ->take(3);
 
-        $offers = Offer::latest()->take(3)->get();
-
-        $services = Service::active()->withTranslation()->latest()->take(3)->get();
+        $offers     = Offer::latest()->take(3)->get();
+        $services   = Service::active()->withTranslation()->latest()->take(3)->get();
         $apartments = Apartment::active()->withTranslation()->latest()->take(3)->get();
-        $cars = Car::active()->withTranslation()->latest()->take(3)->get();
-        $hotels = Hotel::active()->withTranslation()->latest()->take(3)->get();
+        $cars       = Car::active()->withTranslation()->latest()->take(3)->get();
+        $hotels     = Hotel::active()->withTranslation()->latest()->take(3)->get();
 
-        return view('home', compact(
-            'featuredItems',
-            'offers',
-            'services',
-            'apartments',
-            'cars',
-            'hotels'
-        ));
+        return view('home', compact('featuredItems', 'offers', 'services', 'apartments', 'cars', 'hotels'));
     }
 
     public function search(Request $request)
     {
-        $query = $request->input('search', '');
-        
-        if (empty(trim($query))) {
-            return view('search', ['searchResults' => collect()]);
+        // ✅ Fix 1: validate + trim + null guard
+        $query = trim($request->input('search', ''));
+
+        if (blank($query)) {
+            return view('search', ['searchResults' => collect(), 'query' => '']);
         }
 
         $apartments = $this->searchInModel(Apartment::class, $query, 'apartment');
-        $cars       = $this->searchInModel(Car::class, $query, 'car');
-        $hotels     = $this->searchInModel(Hotel::class, $query, 'hotel');
-        $services   = $this->searchInModel(Service::class, $query, 'service');
+        $cars       = $this->searchInModel(Car::class,       $query, 'car');
+        $hotels     = $this->searchInModel(Hotel::class,     $query, 'hotel');
+        $services   = $this->searchInModel(Service::class,   $query, 'service');
 
         $searchResults = collect()
             ->merge($apartments)
             ->merge($cars)
             ->merge($hotels)
             ->merge($services)
-            ->sortByDesc('search_score');
+            ->sortByDesc('search_score') // ✅ Fix 2: sort the final merged collection
+            ->values();
 
-        return view('search', compact('searchResults'));
+        return view('search', compact('searchResults', 'query'));
     }
 
-    private function searchInModel(string $model, string $query, string $type): Collection
+    private function searchInModel(string $model, string $query, string $type)
     {
-        if (!class_exists($model)) {
+        // ✅ Fix 3: normalize Arabic + remove diacritics
+        $normalized = $this->normalizeArabic($query);
+
+        // ✅ Fix 4: filter empty words properly (was breaking on blank query)
+        $words = collect(preg_split('/[\s،,]+/u', $normalized))
+            ->filter(fn($w) => mb_strlen(trim($w)) > 1)
+            ->unique()
+            ->values()
+            ->toArray();
+
+        if (empty($words)) {
             return collect();
         }
 
         $instance = new $model;
-        
-        if (!method_exists($instance, 'active') || !method_exists($instance, 'withTranslation')) {
-            return collect();
-        }
+        $hasCity  = in_array('city', $instance->translatedAttributes ?? []);
 
-        $query = trim($query);
-        if (empty($query)) {
-            return collect();
-        }
+        $results = $model::active()
+            ->withTranslation()
+            ->whereHas('translations', function ($q) use ($words, $normalized, $hasCity) {
+                $q->where('locale', app()->getLocale())
+                  ->where(function ($sub) use ($words, $normalized, $hasCity) {
 
-        $searchWords = collect(explode(' ', $query))
-            ->filter(fn($word) => mb_strlen(trim($word)) > 2)
-            ->values()
-            ->toArray();
+                      // ✅ Fix 5: search full normalized query first (exact phrase)
+                      $sub->orWhere('name', 'like', "%{$normalized}%")
+                          ->orWhere('tags', 'like', "%{$normalized}%");
 
-        if (empty($searchWords)) {
-            $searchWords = [$query];
-        }
+                      if ($hasCity) {
+                          $sub->orWhere('city', 'like', "%{$normalized}%");
+                      }
 
-        try {
-            $results = $model::active()
-                ->withTranslation()
-                ->whereHas('translations', function ($q) use ($searchWords, $instance) {
-                    $q->where('locale', app()->getLocale())
-                      ->where(function ($sub) use ($searchWords, $instance) {
-                          foreach ($searchWords as $word) {
-                              $sub->orWhere('name', 'like', "%$word%");
-                              $sub->orWhere('tags', 'like', "%$word%");
-                              
-                              if (property_exists($instance, 'translatedAttributes') && 
-                                  in_array('city', $instance->translatedAttributes ?? [])) {
-                                  $sub->orWhere('city', 'like', "%$word%");
-                              }
+                      // then each word separately
+                      foreach ($words as $word) {
+                          $sub->orWhere('name', 'like', "%{$word}%")
+                              ->orWhere('tags', 'like', "%{$word}%");
+
+                          if ($hasCity) {
+                              $sub->orWhere('city', 'like', "%{$word}%");
                           }
-                      });
-                })
-                ->get();
-        } catch (\Exception $e) {
-            \Log::error("Search error in {$model}: " . $e->getMessage());
-            return collect();
-        }
-
-        if ($results->isEmpty()) {
-            return collect();
-        }
-
-        return $results
-            ->map(function ($item) use ($query, $type) {
-                $score = 0;
-                
-                $name = $item->name ?? '';
-                $lowerName = mb_strtolower($name);
-                $lowerQuery = mb_strtolower($query);
-                
-                if ($lowerName === $lowerQuery) {
-                    $score += 100;
-                }
-                elseif (str_contains($lowerName, $lowerQuery)) {
-                    $score += 50;
-                }
-                
-                if (!empty($item->tags) && str_contains(mb_strtolower($item->tags), $lowerQuery)) {
-                    $score += 30;
-                }
-                
-                if (!empty($item->city) && str_contains(mb_strtolower($item->city), $lowerQuery)) {
-                    $score += 20;
-                }
-                
-                $queryWords = explode(' ', $lowerQuery);
-                foreach ($queryWords as $word) {
-                    if (mb_strlen($word) > 2 && str_contains($lowerName, $word)) {
-                        $score += 10;
-                    }
-                }
-
-                $item->setAttribute('search_score', $score);
-                $item->setAttribute('search_type', $type);
-                return $item;
+                      }
+                  });
             })
-            ->filter(function ($item) {
-                return $item->search_score > 0;
-            })
-            ->sortByDesc('search_score')
-            ->values();
+            ->get();
+
+        // ✅ Fix 6: score null-safe with fallback to empty string
+        return $results->map(function ($item) use ($query, $normalized, $words, $type) {
+            $score = 0;
+
+            $name = mb_strtolower((string) ($item->name ?? ''));
+            $tags = mb_strtolower((string) ($item->tags ?? ''));
+            $city = mb_strtolower((string) ($item->city ?? ''));
+            $hay  = $name . ' ' . $tags . ' ' . $city;
+
+            $lowerNorm = mb_strtolower($normalized);
+
+            if ($name === $lowerNorm)                    $score += 100; // exact name match
+            if (str_contains($name, $lowerNorm))         $score += 50;  // phrase in name
+            if (str_contains($tags, $lowerNorm))         $score += 30;  // phrase in tags
+            if (str_contains($city, $lowerNorm))         $score += 20;  // phrase in city
+
+            foreach ($words as $word) {
+                $w = mb_strtolower($word);
+                if (str_contains($name, $w)) $score += 10;
+                if (str_contains($tags, $w)) $score += 5;
+                if (str_contains($city, $w)) $score += 5;
+            }
+
+            $item->setAttribute('search_score', $score);
+            $item->setAttribute('search_type',  $type);
+            $item->setAttribute('search_query', $query); // ✅ مفيد في الـ view
+            return $item;
+        })
+        ->sortByDesc('search_score')
+        ->values();
+    }
+
+    private function normalizeArabic(string $text): string
+    {
+        $text = mb_strtolower(trim($text));
+        // توحيد الألف
+        $text = str_replace(['أ','إ','آ','ٱ'], 'ا', $text);
+        // حذف التشكيل
+        $text = preg_replace('/[\x{064B}-\x{065F}]/u', '', $text);
+        return $text;
     }
 }
