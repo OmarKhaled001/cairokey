@@ -52,28 +52,30 @@ class HomeController extends Controller
     /* ══════════════════════════════════════════════
      |  SEARCH
      ══════════════════════════════════════════════ */
-    public function search(Request $request)
-    {
-        $raw = trim($request->input('search', ''));
+    
 
-        if (blank($raw)) {
-            return view('search', ['searchResults' => collect(), 'query' => '']);
-        }
+public function search(Request $request)
+{
+    $query = trim($request->input('search', ''));
 
-        $normalized = $this->normalize($raw);
-        $words      = $this->tokenize($normalized);
-
-        if (empty($words)) {
-            return view('search', ['searchResults' => collect(), 'query' => $raw]);
-        }
-
-        $searchResults = collect(self::SEARCHABLE)
-            ->flatMap(fn($model, $type) => $this->searchModel($model, $type, $normalized, $words))
-            ->sortByDesc('search_score')
-            ->values();
-
-        return view('search', compact('searchResults') + ['query' => $raw]);
+    if (blank($query)) {
+        return view('search', ['searchResults' => collect(), 'query' => '']);
     }
+
+    $searchResults = collect(self::SEARCHABLE)
+        ->flatMap(fn($model, $type) => $model::active()
+            ->withTranslation()
+            ->whereHas('translations', fn($q) => $q
+                ->where('locale', app()->getLocale())
+                ->where('name', 'like', "%{$query}%")
+            )
+            ->get()
+            ->each(fn($item) => $item->search_type = $type)
+        )
+        ->values();
+
+    return view('search', compact('searchResults', 'query'));
+}
 
     /* ──────────────────────────────────────────────
      | Query one model and score its results
